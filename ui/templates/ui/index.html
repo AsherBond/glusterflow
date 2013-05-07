@@ -7,10 +7,26 @@
     <script src="{% static 'ui/js/g.line-min.js.gz' %}"></script>
     <script src="{% static 'ui/js/g.pie-min.js.gz' %}"></script>
     <script>
-        <!-- Placeholder -->
+            window.onload = function () {
+                var r = Raphael("chart"),
+                    fin = function () {
+                        this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+                    },
+                    fout = function () {
+                        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+                    },
+                    txtattr = { font: "13px sans-serif" };
+
+                r.text(115, 250, "File operations over the past 24 hours").attr(txtattr);
+
+                r.barchart(0, 0, 400, 220,
+                           [[120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 1, -10,
+                           -20, -30, -40, -50, -60, -70, -80, -90, -100, -110]]).hover(fin, fout);
+            };
     </script>
 </head>
 <body>
-    <div id="placeholder"></div>
+    <div id="chart"></div>
+    <div id="info_rows"></div>
 </body>
 </html>
