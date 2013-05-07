@@ -9,6 +9,9 @@ urlpatterns = patterns('',
     # url(r'^$', 'glusterflow.views.home', name='home'),
     # url(r'^glusterflow/', include('glusterflow.foo.urls')),
 
+    # Glusterflow UI
+    url(r'^ui/', include('ui.urls')),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
