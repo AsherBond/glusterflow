@@ -24,13 +24,13 @@
             r.barchart(0, 0, 600, 260, [
 
                 // Create the array of column values
-                {% for count in counts %}
+                {% for count in counts reversed %}
                     {{ count }},
                 {% endfor %}
                     ],{'type': 'soft', 'colors': [
 
                 // Create the array of colour values
-                {% for count in counts %}
+                {% for count in counts reversed %}
                     {% if count != highest_count %}
                         "blue",
                     {% else %}
