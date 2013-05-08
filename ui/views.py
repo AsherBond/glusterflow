@@ -9,12 +9,12 @@ def index(request):
 
     # Create the initial time slices
     rightnow = datetime.now()
-    slice1 = rightnow - timedelta(hours=4)
-    slice2 = slice1 - timedelta(hours=4)
-    slice3 = slice2 - timedelta(hours=4)
-    slice4 = slice3 - timedelta(hours=4)
-    slice5 = slice4 - timedelta(hours=4)
-    slice6 = slice5 - timedelta(hours=4)
+    slice1 = rightnow - timedelta(minutes=20)
+    slice2 = slice1 - timedelta(minutes=20)
+    slice3 = slice2 - timedelta(minutes=20)
+    slice4 = slice3 - timedelta(minutes=20)
+    slice5 = slice4 - timedelta(minutes=20)
+    slice6 = slice5 - timedelta(minutes=20)
 
     # Slice the flow data into time slices
     flow1 = all_flows.filter(start_time__gte=slice1)
