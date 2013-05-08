@@ -28,10 +28,10 @@ def index(request):
     counts = []
     highest_count_value = 0 # Holds the highest flow value found in a time slice
     for x in range(num_slices):
-      new_count = flows[x].count()
-      if new_count > highest_count_value:
-        highest_count_value = new_count
-      counts.append(new_count)
+        new_count = flows[x].count()
+        if new_count > highest_count_value:
+            highest_count_value = new_count # Keep track of the highest flow count value
+        counts.append(new_count)
 
     # Render and return the view
     template = loader.get_template('ui/index.html')
