@@ -17,7 +17,8 @@
                 fout = function () {
                     this.flag.animate({opacity: 0}, 300, function () {this.remove();});
                 },
-                txtattr = { font: "13px sans-serif" };
+                txtattr = { font: "13px sans-serif" },
+                txtattr_big = { font: "14px sans-serif" };
 
             // Render the barchart
             r.barchart(0, 0, 600, 260, [
@@ -39,8 +40,10 @@
                     ]}).hover(fin, fout);
 
             // Render the accompanying text
-            r.text(115, 250, "File operations over the past 4 hours").attr(txtattr);
-            r.text(115, 268, "Each bar is 20 minutes").attr(txtattr);
+            r.text(310, 260, "File operations over the past 4 hours").attr(txtattr_big);
+            r.text(310, 282, "Each bar is 20 minutes").attr(txtattr_big);
+            r.text(28, 250, "4 hrs ago").attr(txtattr);
+            r.text(569, 250, "Now").attr(txtattr);
         };
     </script>
 </head>
