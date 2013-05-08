@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.db import connection
 from django.template import Context, loader
 from django.utils import timezone
 from datetime import timedelta
@@ -33,16 +34,13 @@ def index(request):
             highest_count_value = new_count # Keep track of the highest flow count value
         counts.append(new_count)
 
-    # Determine the # of distinct filenames used in each time slice
-##    distinct_names = []
-#    distinct_names = flows[0].distinct('filename')
-###    distinct_names = flows[0].distinct('filename')[:10]
-##    for x in range(num_slices):
-##        distinct_names.append = flows[x].distinct('filename')
-
     # Work out the top X (10?) busiest filenames for each time slice
-    # select distinct (filename) filename, count(*) OVER (PARTITION by filename) from ui_flowdata where start_time > now() - interval '160 minutes' order by count desc limit 10
-#    name_counts = []
+    # Note - This is PostgreSQL specific syntax as it's MUCH faster than
+    # using Django syntax (for me, with limited Django knowledge so far)
+    cursor = connection.cursor()
+    cursor.execute("select distinct (filename) filename, count(*) OVER (PARTITION by filename) from ui_flowdata where start_time > %s order by count desc limit 10", [rightnow])
+    busiest_files = cursor.fetchall()
+
 #    for i in distinct_names:
 #        name_count = flows[0].filter(filename=i.filename).count()
 #        name_counts.append([i.filename, name_count])
@@ -56,5 +54,6 @@ def index(request):
         'num_slices': num_slices, # The number of time slices in the data array
         'counts': counts, # Array holding the flow totals per time slice
         'highest_count': highest_count_value, # The highest flow value found.  Used to highlight the busiest time slice
+        'busiest_files': busiest_files, # The busiest files in the first time slice (should be expanded to do each time slice)
     })
     return HttpResponse(template.render(context))
