@@ -7,25 +7,29 @@
     <script src="{% static 'ui/js/g.line-min.js.gz' %}"></script>
     <script src="{% static 'ui/js/g.pie-min.js.gz' %}"></script>
     <script>
-            window.onload = function () {
-                var r = Raphael("chart"),
-                    fin = function () {
-                        this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
-                    },
-                    fout = function () {
-                        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-                    },
-                    txtattr = { font: "13px sans-serif" };
+        window.onload = function () {
+            var r;
+            // Set up the barchart and hover animation
+            r  = Raphael("chart"),
+                fin = function () {
+                    this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+                },
+                fout = function () {
+                    this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+                },
+                txtattr = { font: "13px sans-serif" };
 
-                r.text(115, 250, "File operations over the past 4 hours").attr(txtattr);
-                r.text(115, 268, "Each bar is 20 minutes").attr(txtattr);
+            // Render the barchart
+            r.barchart(0, 0, 600, 260, [
+                {% for count in counts %}
+                    {{ count }},
+                {% endfor %}
+                    ]).hover(fin, fout);
 
-                r.barchart(0, 0, 600, 260, [
-                    {% for count in counts %}
-                           {{ count }},
-                    {% endfor %}
-                           ]).hover(fin, fout);
-            };
+            // Render the accompanying text
+            r.text(115, 250, "File operations over the past 4 hours").attr(txtattr);
+            r.text(115, 268, "Each bar is 20 minutes").attr(txtattr);
+        };
     </script>
 </head>
 <body>
