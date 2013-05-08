@@ -21,10 +21,22 @@
 
             // Render the barchart
             r.barchart(0, 0, 600, 260, [
+
+                // Create the array of column values
                 {% for count in counts %}
                     {{ count }},
                 {% endfor %}
-                    ]).hover(fin, fout);
+                    ],{'type': 'soft', 'colors': [
+
+                // Create the array of colour values
+                {% for count in counts %}
+                    {% if count != highest_count %}
+                        "blue",
+                    {% else %}
+                        "red",
+                    {% endif %}
+                {% endfor %}
+                    ]}).hover(fin, fout);
 
             // Render the accompanying text
             r.text(115, 250, "File operations over the past 4 hours").attr(txtattr);

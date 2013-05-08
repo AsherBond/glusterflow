@@ -25,18 +25,20 @@ def index(request):
 
     # Count the number of flows in each time slice
     counts = []
+    highest_count_value = 0 # Holds the highest flow value found in a time slice
     for x in range(num_slices):
-      counts.append(flows[x].count())
+      new_count = flows[x].count()
+      if new_count > highest_count_value:
+        highest_count_value = new_count
+      counts.append(new_count)
 
     # Render and return the view
     template = loader.get_template('ui/index.html')
     context = Context({
-        'all_flows': all_flows,
-        'rightnow': rightnow,
-        'num_slices': num_slices,
-        'delta': delta,
-        'slices': slices,
-        'flows': flows,
-        'counts': counts,
+        'rightnow': rightnow, # Timestamp of when this data is from
+        'delta': delta, # The number of minutes per time slice
+        'num_slices': num_slices, # The number of time slices in the data array
+        'counts': counts, # Array holding the flow totals per time slice
+        'highest_count': highest_count_value, # The highest flow value found.  Used to highlight the busiest time slice
     })
     return HttpResponse(template.render(context))
