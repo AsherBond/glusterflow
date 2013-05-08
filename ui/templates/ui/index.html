@@ -46,11 +46,9 @@
 </head>
 <body>
     <h2>GlusterFlow : Host usage profile over time</h2>
-    <br />
+    Data from {{ right_now }}
     <div id="chart"></div>
     <div id="info_rows">
-        Time now: {{ rightnow }}
-        <br />
         <h3>Busiest files</h3>
         <table>
             <tr><th align="left">Filename</td><th># of file operations</td></tr>
@@ -58,6 +56,10 @@
             <tr><td align="left">{{ row.0 }}</td><td>{{ row.1 }}</td></tr>
             {% endfor %}
         </table>
+    </div>
+    <br />
+    <div id="extra">
+        This page took {{ processing_time }} seconds to create.
     </div>
 </body>
 </html>
