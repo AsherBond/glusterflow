@@ -51,13 +51,12 @@
     <div id="info_rows">
         Time now: {{ rightnow }}
         <br />
-        <br />
         <h3>Busiest files</h3>
         <table>
-            <tr><th>Filenames</td><th># of file operations</td></tr>
-            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><th align="left">Filename</td><th># of file operations</td></tr>
+            {% for row in busiest_files %}
+            <tr><td align="left">{{ row.0 }}</td><td>{{ row.1 }}</td></tr>
+            {% endfor %}
         </table>
     </div>
 </body>
