@@ -33,6 +33,21 @@ def index(request):
             highest_count_value = new_count # Keep track of the highest flow count value
         counts.append(new_count)
 
+    # Determine the # of distinct filenames used in each time slice
+##    distinct_names = []
+#    distinct_names = flows[0].distinct('filename')
+###    distinct_names = flows[0].distinct('filename')[:10]
+##    for x in range(num_slices):
+##        distinct_names.append = flows[x].distinct('filename')
+
+    # Work out the top X (10?) busiest filenames for each time slice
+    # select distinct (filename) filename, count(*) OVER (PARTITION by filename) from ui_flowdata where start_time > now() - interval '160 minutes' order by count desc limit 10
+#    name_counts = []
+#    for i in distinct_names:
+#        name_count = flows[0].filter(filename=i.filename).count()
+#        name_counts.append([i.filename, name_count])
+#        print i.filename, "  :  ", name_count
+
     # Render and return the view
     template = loader.get_template('ui/index.html')
     context = Context({
