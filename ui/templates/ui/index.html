@@ -17,15 +17,32 @@
                     },
                     txtattr = { font: "13px sans-serif" };
 
-                r.text(115, 250, "File operations over the past 24 hours").attr(txtattr);
+                r.text(115, 250, "File operations over the past 4 hours").attr(txtattr);
+                r.text(115, 268, "Each bar is 20 minutes").attr(txtattr);
 
-                r.barchart(0, 0, 400, 220,
-                           [{{ count6 }}, {{ count5 }}, {{ count4 }}, {{ count3 }}, {{ count2 }}, {{ count1 }}]).hover(fin, fout);
+                r.barchart(0, 0, 600, 260, [
+                    {% for count in counts %}
+                           {{ count }},
+                    {% endfor %}
+                           ]).hover(fin, fout);
             };
     </script>
 </head>
 <body>
+    <h2>GlusterFlow : Host usage profile over time</h2>
+    <br />
     <div id="chart"></div>
-    <div id="info_rows"></div>
+    <div id="info_rows">
+        Time now: {{ rightnow }}
+        <br />
+        <br />
+        <h3>Busiest files</h3>
+        <table>
+            <tr><th>Filenames</td><th># of file operations</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </table>
+    </div>
 </body>
 </html>
