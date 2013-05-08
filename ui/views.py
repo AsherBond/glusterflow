@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.template import Context, loader
-from datetime import datetime, timedelta
+from django.utils import timezone
+from datetime import timedelta
 
 from ui.models import Flowdata
 
@@ -8,7 +9,7 @@ def index(request):
     # Set up initial values
     all_flows = Flowdata.objects.all()
     delta = timedelta(minutes=20)
-    rightnow = datetime.now()
+    rightnow = timezone.now()
     num_slices = 12
 
     # Create the initial time slices
