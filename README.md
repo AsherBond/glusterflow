@@ -1,14 +1,19 @@
 GlusterFlow
 ===========
 
-Gluster cluster wide profiling and analysis web app.
+A cluster wide profiling and analysis web app for GlusterFS.
 
-Uses Django 1.5 and Python 2.7 for the web application component.
-
-Data is sent from the Gluster nodes (using UDP) via a simple JSON client, using Glupy and Python 2.x.
+Status
+------
 
 This is in very early stages of development, but making good progress already.
 
+Requirements
+------------
+
+* Python 2.7, Django 1.5, and PostgreSQL for the web application front end
+* Python 2.7 and PostgreSQL for the JSON server (receives/collects data in JSON format)
+* Python 2.x on the GlusterFS nodes, for the JSON client
 
 Screenshot
 ----------
@@ -60,7 +65,4 @@ If your using Glupy from the above GitHub repository
 
 Running it
 ----------
-
-
-
 
