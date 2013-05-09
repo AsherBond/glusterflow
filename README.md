@@ -33,7 +33,7 @@ To Do
 Installation
 ------------
 
-1. Install Glupy on your GlusterFS nodes
+\1. Install Glupy on your GlusterFS nodes
 
 GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
 
@@ -47,22 +47,23 @@ the external project repository:
 
 Generally you can git clone it, then do the standard make, make install.
 
-2. Install the JSON client on your GlusterFS nodes
+\2. Install the JSON client on your GlusterFS nodes
 
 If your using Glupy from the above GitHub repository
     $ sudo cp json/glusterflowclient.py /usr/lib64/glusterfs/3git/xlator/features/glupy/
 
 
-3. The JSON server
+\3. The JSON server
 
 * Requires a PostgreSQL server
 
 
-4. The GlusterFlow web application
+\4. The GlusterFlow web application
 
 * Requires a PostgreSQL server
 
 
 Running it
 ----------
+
 
