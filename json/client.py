@@ -9,11 +9,12 @@ from gluster import *
 This is to enable intelligent diagnostics and reporting cluster wide.
 """
 
-# GlusterFlow Server - obviously, the hard coding needs to be fixed
+# GlusterFlow Server
+# This needs to be changed into a .vol file option
 glusterflow_json_server = ('192.168.1.68', 13373)
 
 # Debug on or off
-debug = 1
+debug = 0
 
 class xlator (Translator):
 
