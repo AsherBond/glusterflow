@@ -19,10 +19,7 @@ Screenshot
 To Do
 -----
 
-Expand the JSON client and server code (Python + Glupy) for more file operations.  Preferably all of them.  Shouldn't be too hard, just a bit time consuming.
-
-Add real interactivity to the bar graph and busiest files list, to enable refinement and drilling down into data sets.
-
-Add support for displaying data from multiple gluster hosts and clients (with appropriate selectors).
-
-Fix the bar graph display, so it shows scale, values, real time frame, and everything else useful.
+* Expand the JSON client and server code (Python + Glupy) for more file operations.  Preferably all of them.  Shouldn't be too hard, just a bit time consuming.
+* Add real interactivity to the bar graph and busiest files list, to enable refinement and drilling down into data sets.
+* Add support for displaying data from multiple gluster hosts and clients (with appropriate selectors).
+* Fix the bar graph display, so it shows scale, values, real time frame, and everything else useful.
