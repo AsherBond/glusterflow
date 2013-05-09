@@ -48,17 +48,18 @@ If your using Glupy from the above GitHub repository
     $ sudo cp json/glusterflowclient.py /usr/lib64/glusterfs/3git/xlator/features/glupy/
 
 
-3. The JSON server 
+3. The JSON server
+
+* Requires a PostgreSQL server
 
 
-4. The GlusterFlow web application 
+4. The GlusterFlow web application
+
+* Requires a PostgreSQL server
 
 
-
-
-
-
-
+Running it
+----------
 
 
 
