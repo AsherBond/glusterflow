@@ -29,7 +29,7 @@ Linux for the Gluster nodes
 * Others should work too.  The JSON client is extremely simple code. :)
 
 Linux and MacOS X for the web app and JSON server
-* MacOS X Lion is known to work
+* MacOS X 10.7 (Lion) is known to work (10.8 may work but is untested)
 * RHEL/CentOS 6.x should work
 * Debian/Ubuntu should work
 * Others may work (untested)
@@ -53,15 +53,37 @@ Generally you can git clone it, then do the standard make, make install.
 
 __2. Install the JSON client on your GlusterFS nodes__
 
-If your using Glupy from the above GitHub repository:
+If you're using Glupy from the above GitHub repository, then the
+glusterflowclient.py file needs to be in your PYTHONPATH.
+
+Your PYTHONPATH can be found using:
+
+    $ python -c "import sys; print sys.path"
+
+Copy the glusterflowclient.py file to any of the directories there. eg:
+
+    $ sudo cp json/glusterflowclient.py /usr/lib64/python2.6/site-packages/
+
+If you are using GlusterFS 3.5 or a recent version of GlusterFS
+compiled from git, the glusterflowclient.py file goes into the "glupy"
+subdirectory of the installation instead:
 
     $ sudo cp json/glusterflowclient.py /usr/lib64/glusterfs/3git/xlator/features/glupy/
 
-__3. Install the JSON server__
+The "3git" part of the above string is a version number, and may be
+different for you. (it's ok if it is)
+
+__3. Point the JSON client at the JSON server__
+
+With a text editor, open up the glusterflowclient.py file you just
+installed.  Change the IP address near the top of the file to point
+at your JSON server (installed in the next step).
+
+__4. Install the JSON server__
 
 _To be written_
 
-__4. Install the GlusterFlow web application__
+__5. Install the GlusterFlow web application__
 
 _To be written_
 
