@@ -125,9 +125,32 @@ yours: :)
 __6. Create the database tables__
 
 Run manage.py with the "syncdb" command.  This creates all of the database
-tables needed:
+tables needed.  Create the Django superuser too if it asks:
 
-    ./manage.py syncdb
+    $ ./manage.py syncdb
+    Creating tables ...
+    Creating table auth_permission
+    Creating table auth_group_permissions
+    Creating table auth_group
+    Creating table auth_user_groups
+    Creating table auth_user_user_permissions
+    Creating table auth_user
+    Creating table django_content_type
+    Creating table django_session
+    Creating table django_site
+    Creating table django_admin_log
+    Creating table ui_flowdata
+
+    You just installed Django's auth system, which means you don't have any superusers defined.
+    Would you like to create one now? (yes/no): yes
+    Username (leave blank to use 'someuser'): someuser
+    Email address: someuser@example.org
+    Password: ********
+    Password (again): ********
+    Superuser created successfully.
+    Installing custom SQL ...
+    Installing indexes ...
+    Installed 0 object(s) from 0 fixture(s)
 
 Running it
 ----------
