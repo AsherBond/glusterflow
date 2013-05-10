@@ -122,6 +122,13 @@ yours: :)
 
     TEMPLATE_DIRS = ('/DATA/git_repos/glusterflow/templates/')
 
+__6. Create the database tables__
+
+Run manage.py with the "syncdb" command.  This creates all of the database
+tables needed:
+
+    ./manage.py syncdb
+
 Running it
 ----------
 
