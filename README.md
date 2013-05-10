@@ -99,9 +99,9 @@ Personally, I just leave it in the GlusterFlow repo and run it from there. :)
 
 __5. Install the GlusterFlow web application__
 
-First, install Django:
+First, install Django and the python PostgreSQL drivers:
 
-    $ pip install Django
+    $ pip install Django psycopg2
 
 Then update the database connection details in glusterflow/settings.py.
 
