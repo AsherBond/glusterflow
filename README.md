@@ -111,18 +111,34 @@ Then update the database connection details in glusterflow/settings.py.
     'USER': 'databaseuser',
     'PASSWORD': 'somepassword',
 
+Then update the timezone in the same file:
+
+    TIME_ZONE = 'Europe/London'
+
+Finally, update the template dirs path in the same file, to point at the
+glusterflow/templates/ directory in your cloned GlusterFlow git repo.
+At present it has a path that matches my system, which won't be the same
+on yours: :)
+
+    TEMPLATE_DIRS = ('/DATA/git_repos/glusterflow/templates/')
+
 Running it
 ----------
 
-__The JSON client__
+__1. The JSON server__
 
-_To be written_
+The JSON server is extremely easy to start:
 
-__The JSON server__
+    $ json/server.py
 
-_To be written_
+The JSON server should be started before the JSON client on any of the
+GlusterFS nodes.
 
-__The web application__
+__2. The JSON client__
+
+The JSON client 
+
+__3. The web application__
 
 To Do
 -----
