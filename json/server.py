@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import sys
-import SocketServer
 import json
 import psycopg2
+from twisted.internet.protocol import DatagramProtocol
+from twisted.internet import reactor
 """GlusterFlow JSON Server
 
 Very simple JSON server, catching GlusterFlow JSON data
@@ -13,21 +14,17 @@ Very proof-of-concept / experimental :)
 """
 
 #  Set various constants
-gf_json_server_ver = '0.0.1'
+gf_json_server_ver = '0.0.2'
 db_host = 'localhost'
 db_name = 'glusterflow'
 debug = 0
 
 
-class MyUDPServer(SocketServer.ThreadingUDPServer):
-    allow_reuse_address = True
-
-
-class MyUDPServerHandler(SocketServer.BaseRequestHandler):
-    def handle(self):
+class MyUDPServerHandler(DatagramProtocol):
+    def datagramReceived(self, data, (host, port)):
         try:
             # Receive JSON message
-            gl_data = json.loads(self.request[0].strip())
+            gl_data = json.loads(data.strip())
 
             # Display the JSON message (for now only)
             if debug == 1:
@@ -74,17 +71,9 @@ except:
         print 'DEBUG: Unable to connect to database'
 
 # Start JSON server listening
-server = MyUDPServer(('0.0.0.0', 13373), MyUDPServerHandler)
-
-try:
-    if debug == 1:
-        print "DEBUG: Starting JSON listener"
-    server.serve_forever()
-
-except KeyboardInterrupt, e:
-
-    # Close database connection
-    if conn:
-        conn.close()
-        if debug == 1:
-            print "\nDEBUG: Database connection closed"
+if debug == 1:
+    print 'DEBUG: Starting JSON listener'
+reactor.listenUDP(13373, MyUDPServerHandler())
+reactor.run()
+if debug == 1:
+    print 'DEBUG: Exiting GlusterFlow JSON Server'
