@@ -16,8 +16,8 @@ This is in very early stages of development, but making good progress already.
 Requirements
 ------------
 
-* Python 2.7, Django 1.5, and PostgreSQL for the web application front end
-* Python 2.7 and PostgreSQL for the JSON server (receives/collects data in JSON format)
+* Python 2.7.x, Django 1.5.x, and PostgreSQL 8/9+ for the web application front end
+* Python 2.7.x and PostgreSQL for the JSON server (receives/collects data in JSON format)
 * Python 2.x on the GlusterFS nodes, for the JSON client
 
 Supported Platforms
