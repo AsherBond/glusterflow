@@ -114,7 +114,15 @@ Then update the database connection details in glusterflow/settings.py.
 Running it
 ----------
 
+__The JSON client__
+
 _To be written_
+
+__The JSON server__
+
+_To be written_
+
+__The web application__
 
 To Do
 -----
