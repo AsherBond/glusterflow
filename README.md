@@ -116,9 +116,9 @@ Then update the timezone in the same file:
     TIME_ZONE = 'Europe/London'
 
 Finally, update the template dirs path in the same file, to point at the
-glusterflow/templates/ directory in your cloned GlusterFlow git repo.
-At present it has a path that matches my system, which won't be the same
-on yours: :)
+glusterflow/templates/ directory in your cloned GlusterFlow git repo. At
+present it has a path that matches my system, which won't be the same on
+yours: :)
 
     TEMPLATE_DIRS = ('/DATA/git_repos/glusterflow/templates/')
 
@@ -130,13 +130,24 @@ __1. The JSON server__
 The JSON server is extremely easy to start:
 
     $ json/server.py
+    GlusterFlow JSON Server 0.0.2
+
+It can also be started with --debug to enable verbose debugging, which will
+show every JSON message received:
+
+    $ json/server.py --debug
+    GlusterFlow JSON Server 0.0.2
+    DEBUG: Connected to database
+    DEBUG: Starting JSON listener
+    DEBUG: {u'start': u'2013-05-10 22:38:05.267658', u'operation': u'lookup', u'protocol': u'nfs', u'file': u'/', u'server': u'centos64.uk.gluster.org'}
 
 The JSON server should be started before the JSON client on any of the
 GlusterFS nodes.
 
 __2. The JSON client__
 
-The JSON client 
+The JSON client is a Glupy translator.  Instructions for installing translators
+can be found on the Glupy page: https://github.com/jdarcy/glupy
 
 __3. The web application__
 
