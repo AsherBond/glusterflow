@@ -151,6 +151,21 @@ can be found on the Glupy page: https://github.com/jdarcy/glupy
 
 __3. The web application__
 
+Start the web application by passing "runserver" to manage.py:
+
+    $ ./manage.py runserver
+    Validating models...
+
+    0 errors found
+    May 10, 2013 - 23:43:35
+    Django version 1.5.1, using settings 'glusterflow.settings'
+    Development server is running at http://127.0.0.1:8000/
+    Quit the server with CONTROL-C.
+
+Now you can connect to the webserver on http://127.0.0.1:8000 with your browser.
+
+There's no authentication in the GlusterFlow web interface (yet). :)
+
 To Do
 -----
 
