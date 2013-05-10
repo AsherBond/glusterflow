@@ -41,11 +41,11 @@ __1. Install Glupy on your GlusterFS nodes__
 
 GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
 
-If you're using a recent version of Gluster (3.5 and above), then Glupy
-should already be installed as part of it.
+If you're using a recent version of Gluster (3.5 and above), then Glupy should
+already be installed as part of it.
 
-If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from
-the external project repository:
+If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from the
+external project repository:
 
   https://github.com/jdarcy/glupy
 
@@ -64,20 +64,20 @@ Copy the glusterflowclient.py file to any of the directories there. eg:
 
     $ sudo cp json/glusterflowclient.py /usr/lib64/python2.6/site-packages/
 
-If you are using GlusterFS 3.5 or a recent version of GlusterFS
-compiled from git, the glusterflowclient.py file goes into the "glupy"
-subdirectory of the installation instead:
+If you are using GlusterFS 3.5 or a recent version of GlusterFS compiled from
+git, the glusterflowclient.py file goes into the "glupy" subdirectory of the
+installation instead:
 
     $ sudo cp json/glusterflowclient.py /usr/lib64/glusterfs/3git/xlator/features/glupy/
 
-The "3git" part of the above string is a version number, and may be
-different for you. (it's ok if it is)
+The "3git" part of the above string is a version number, and may be different
+for you. (it's ok if it is)
 
 __3. Point the JSON client at the JSON server__
 
-With a text editor, open up the glusterflowclient.py file you just
-installed.  Change the IP address near the top of the file to point
-at your JSON server (installed in the next step).
+With a text editor, open up the glusterflowclient.py file you just installed.
+Change the IP address near the top of the file to point at your JSON server
+(installed in the next step).
 
 __4. Install the JSON server__
 
@@ -85,22 +85,31 @@ First install the Twisted Framework:
 
     $ pip install twisted
 
-Then update the database connection string in the json server .py
-file.  It needs working connection details to store the received
-json messages in the web applications database:
+Then update the database connection string in the json server .py file.  It
+needs working connection details to store the received json messages in the
+web applications database:
 
     $ vi json/server.py
 
-The server.py file doesn't depend on anything else from the
-GlusterFlow repo.  So, if you want, you can copy it to any other
-location in your filesystem. (eg ~/bin/)
+The server.py file doesn't depend on anything else from the GlusterFlow repo.
+So, if you want, you can copy it to any other location in your filesystem.
+(eg ~/bin/)
 
-Personally, I just leave it in the GlusterFlow repo and run it
-from there. :)
+Personally, I just leave it in the GlusterFlow repo and run it from there. :)
 
 __5. Install the GlusterFlow web application__
 
-_To be written_
+First, install Django:
+
+    $ pip install Django
+
+Then update the database connection details in glusterflow/settings.py.
+
+    'HOST': 'my-database-server.example.org',
+    'PORT': '',
+    'NAME': 'databasename',
+    'USER': 'databaseuser',
+    'PASSWORD': 'somepassword',
 
 Running it
 ----------
