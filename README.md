@@ -81,8 +81,6 @@ at your JSON server (installed in the next step).
 
 __4. Install the JSON server__
 
-_To be written_
-
 First install the Twisted Framework:
 
     $ pip install twisted
@@ -93,6 +91,12 @@ json messages in the web applications database:
 
     $ vi json/server.py
 
+The server.py file doesn't depend on anything else from the
+GlusterFlow repo.  So, if you want, you can copy it to any other
+location in your filesystem. (eg ~/bin/)
+
+Personally, I just leave it in the GlusterFlow repo and run it
+from there. :)
 
 __5. Install the GlusterFlow web application__
 
