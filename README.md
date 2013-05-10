@@ -3,6 +3,11 @@ GlusterFlow
 
 A cluster wide profiling and analysis web app for GlusterFS.
 
+Screenshot
+----------
+
+![GlusterFlow Screenshot](https://github.com/justinclift/glusterflow/raw/master/ui/static/ui/screenshots/glusterflow_screenshot_0.0.1.png "GlusterFlow Screenshot")
+
 Status
 ------
 
@@ -19,30 +24,25 @@ Supported Platforms
 -------------------
 
 Linux for the Gluster nodes
-* RHEL6/CentOS are known to work
+* RHEL/CentOS 6.x are known to work
 * Debian/Ubuntu should work (but untested so far)
 * Others should work too.  The JSON client is extremely simple code. :)
 
 Linux and MacOS X for the web app and JSON server
 * MacOS X Lion is known to work
-* RHEL6/CentOS should work
+* RHEL/CentOS 6.x should work
 * Debian/Ubuntu should work
 * Others may work (untested)
-
-Screenshot
-----------
-
-![GlusterFlow Screenshot](https://github.com/justinclift/glusterflow/raw/master/ui/static/ui/screenshots/glusterflow_screenshot_0.0.1.png "GlusterFlow Screenshot")
 
 Installation
 ------------
 
 __1. Install Glupy on your GlusterFS nodes__
 
-  GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
+GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
 
-  If you're using a recent version of Gluster (3.5 and above), then Glupy
-  should already be installed as part of it.
+If you're using a recent version of Gluster (3.5 and above), then Glupy
+should already be installed as part of it.
 
 If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from
 the external project repository:
@@ -57,21 +57,18 @@ If your using Glupy from the above GitHub repository:
 
     $ sudo cp json/glusterflowclient.py /usr/lib64/glusterfs/3git/xlator/features/glupy/
 
+__3. Install the JSON server__
 
-__3. The JSON server__
+_To be written_
 
-* Requires a PostgreSQL server
+__4. Install the GlusterFlow web application__
 
-
-__4. The GlusterFlow web application__
-
-* Requires a PostgreSQL server
-
+_To be written_
 
 Running it
 ----------
 
-
+_To be written_
 
 To Do
 -----
@@ -80,3 +77,4 @@ To Do
 * Add real interactivity to the bar graph and busiest files list, to enable refinement and drilling down into data sets.
 * Add support for displaying data from multiple gluster hosts and clients (with appropriate selectors).
 * Fix the bar graph display, so it shows scale, values, real time frame, and everything else useful.
+* Add authentication
