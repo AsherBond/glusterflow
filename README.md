@@ -83,6 +83,17 @@ __4. Install the JSON server__
 
 _To be written_
 
+First install the Twisted Framework:
+
+    $ pip install twisted
+
+Then update the database connection string in the json server .py
+file.  It needs working connection details to store the received
+json messages in the web applications database:
+
+    $ vi json/server.py
+
+
 __5. Install the GlusterFlow web application__
 
 _To be written_
