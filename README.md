@@ -41,13 +41,12 @@ __1. Install Glupy on your GlusterFS nodes__
 
 GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
 
-If you're using a recent version of Gluster (3.5 and above), then Glupy should
+* If you're using a recent version of Gluster (3.5 and above), then Glupy should
 already be installed as part of it.
-
-If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from the
+* If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from the
 external project repository:
 
-  https://github.com/jdarcy/glupy
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; https://github.com/jdarcy/glupy
 
 __2. Install the JSON client on your GlusterFS nodes__
 
@@ -83,9 +82,9 @@ First install the Twisted Framework:
 
     $ pip install twisted
 
-Then update the database connection string in the json server .py file.  It
-needs working connection details to store the received json messages in the
-web applications database:
+Then update the database connection fields near the top of the json/server.py
+file.  It needs working connection details for storing received json messages
+in the web applications database:
 
     $ vi json/server.py
 
