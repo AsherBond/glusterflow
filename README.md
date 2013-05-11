@@ -24,14 +24,14 @@ Supported Platforms
 -------------------
 
 Linux for the Gluster nodes
-* RHEL/CentOS 6.x are known to work
+* RHEL/CentOS 6.x is known to work
 * Debian/Ubuntu should work (but untested so far)
 * Others should work too.  The JSON client is extremely simple code. :)
 
 Linux and MacOS X for the web app and JSON server
 * MacOS X 10.7 (Lion) is known to work (10.8 may work but is untested)
-* RHEL/CentOS 6.x are known to work
-* Debian/Ubuntu should work
+* RHEL/CentOS 6.x is known to work
+* Debian/Ubuntu should work (but untested so far)
 * Others may work (untested)
 
 Installation
@@ -48,8 +48,6 @@ If you're using Gluster 3.3 or 3.4, then you'll need to install Glupy from the
 external project repository:
 
   https://github.com/jdarcy/glupy
-
-Generally you can git clone it, then do the standard make, make install.
 
 __2. Install the JSON client on your GlusterFS nodes__
 
