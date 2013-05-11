@@ -43,8 +43,8 @@ def index(request):
     busiest_files = cursor.fetchall()
 
     # Work out the length of time taken to create this view
-    end_now = timezone.now()
-    processing_time = timedelta.total_seconds(end_now - right_now)
+    time_delta = timezone.now() - right_now
+    processing_time = time_delta.seconds + (time_delta.days * 24 * 3600)
 
     # Render and return the view
     template = loader.get_template('ui/index.html')
