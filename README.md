@@ -1,7 +1,7 @@
 GlusterFlow
 ===========
 
-A cluster wide profiling and analysis web app for GlusterFS.
+A cluster wide profiling and analysis web app for GlusterFS
 
 Screenshot
 ----------
@@ -11,7 +11,7 @@ Screenshot
 Status
 ------
 
-This is in very early stages of development, but making good progress already.
+This is in very early stages of development, but making good progress already
 
 Requirements
 ------------
@@ -23,12 +23,12 @@ Requirements
 Supported Platforms
 -------------------
 
-Linux for the Gluster nodes
+Linux for the Gluster nodes:
 * RHEL/CentOS 6.x is known to work
 * Debian/Ubuntu should work (but untested so far)
 * Others should work too.  The JSON client is extremely simple code. :)
 
-Linux and MacOS X for the web app and JSON server
+Linux and MacOS X for the web app and JSON server:
 * MacOS X 10.7 (Lion) is known to work (10.8 may work but is untested)
 * RHEL/CentOS 6.x is known to work
 * Debian/Ubuntu should work (but untested so far)
@@ -39,7 +39,7 @@ Installation
 
 __1. Install Glupy on your GlusterFS nodes__
 
-GlusterFlow depends on Glupy being installed on your GlusterFS nodes first.
+GlusterFlow depends on Glupy being installed on your GlusterFS nodes first:
 
 * If you're using a recent version of Gluster (3.5 and above), then Glupy should
 already be installed as part of it.
