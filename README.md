@@ -174,7 +174,9 @@ GlusterFS nodes.
 __2. The JSON client__
 
 The JSON client is a Glupy translator.  Instructions for installing translators
-can be found on the Glupy page: https://github.com/jdarcy/glupy
+can be found on the Glupy page:
+
+&nbsp; &nbsp; &nbsp; https://github.com/jdarcy/glupy
 
 __3. The web application__
 
@@ -192,6 +194,19 @@ Start the web application by passing "runserver" to manage.py:
 Now you can connect to the webserver on http://127.0.0.1:8000 with your browser.
 
 There's no authentication in the GlusterFlow web interface (yet). :)
+
+If you want the web server to listen on something other than 127.0.0.1:8000,
+pass the address on the runserver line.  For example, 0.0.0.0 which will listen
+on all local addresses:
+
+    $ ./manage.py runserver 0.0.0.0:8000
+    Validating models...
+
+    0 errors found
+    May 11, 2013 - 05:28:10
+    Django version 1.5.1, using settings 'glusterflow.settings'
+    Development server is running at http://0.0.0.0:8000/
+    Quit the server with CONTROL-C.
 
 To Do
 -----
