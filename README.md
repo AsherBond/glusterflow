@@ -30,7 +30,7 @@ Linux for the Gluster nodes
 
 Linux and MacOS X for the web app and JSON server
 * MacOS X 10.7 (Lion) is known to work (10.8 may work but is untested)
-* RHEL/CentOS 6.x should work
+* RHEL/CentOS 6.x are known to work
 * Debian/Ubuntu should work
 * Others may work (untested)
 
