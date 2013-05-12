@@ -153,11 +153,22 @@ class xlator (Translator):
         return 0
 
 
-    def stat_fop (self, frame, this, loc, xdata):
+# Something wrong here.  Getting errors about "TypeError: this function takes at least 8 arguments (4 given)"
+#    def stat_fop (self, frame, this, loc, xdata):
+
+#        # Send GlusterFlow JSON message to collector
+#        send_message('stat', loc.contents.path)
+
+#        # Continue on to the next translator
+#        dl.wind_create(frame, POINTER(xlator_t)(), loc, xdata)
+#        return 0
+
+
+    def fstat_fop(self, frame, this, fd, xdata):
 
         # Send GlusterFlow JSON message to collector
-        send_message('stat', loc.contents.path)
+        send_message('fstat', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, xdata)
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, xdata)
         return 0
