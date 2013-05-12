@@ -1,5 +1,9 @@
 <html>{% load staticfiles %}
 <head>
+    <!-- Refresh the page every minute -->
+    <!-- Probably need some way for users to control/disable this -->
+    <meta http-equiv="refresh" content="60" />
+
     <script src="{% static 'ui/js/raphael-min.js.gz' %}"></script>
     <script src="{% static 'ui/js/g.raphael-min.js.gz' %}"></script>
     <script src="{% static 'ui/js/g.bar-min.js.gz' %}"></script>
