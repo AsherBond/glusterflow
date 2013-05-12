@@ -141,3 +141,13 @@ class xlator (Translator):
         # Continue on to the next translator
         dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
         return 0
+
+
+    def readdirp_fop (self, frame, this, fd, size, offset, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('readdirp', 'fd')
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
+        return 0
