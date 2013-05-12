@@ -205,11 +205,104 @@ class xlator (Translator):
         return 0
 
 
-    def fsetxattr_fop (self, frame, this, fd, dictionary, flags, xdata)
+    def fsetxattr_fop (self, frame, this, fd, dictionary, flags, xdata):
 
         # Send GlusterFlow JSON message to collector
         send_message('fsetxattr', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, dictionary, flags, xdata)
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, dictionary, flags,
+                       xdata)
+        return 0
+
+
+    def fgetxattr_fop (self, frame, this, fd, name, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('fgetxattr', 'fd')
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, name, xdata)
+        return 0
+
+
+    def removexattr_fop (self, frame, this, loc, name, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('removexattr', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, name, xdata)
+        return 0
+
+
+    def fremovexattr_fop (self, frame, this, fd, name, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('fremovexattr', 'fd')
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, name, xdata)
+        return 0
+
+
+    def link_fop (self, frame, this, oldloc, newloc, xdata):
+# Probably need new fields in the database for this function
+
+        # Send GlusterFlow JSON message to collector
+        send_message('link', oldloc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), oldloc, newloc, xdata)
+        return 0
+
+
+    def symlink_fop (self, frame, this, linkname, loc, umask, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('symlink', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), linkname, loc, umask,
+                       xdata)
+        return 0
+
+
+    def unlink_fop (self, frame, this, loc, xflags, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('unlink', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, xflags, xdata)
+        return 0
+
+
+    def readlink_fop (self, frame, this, loc, size, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('readlink', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, size, xdata)
+        return 0
+
+
+    def mkdir_fop (self, frame, this, loc, mode, umask, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('mkdir', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, mode, umask, xdata)
+        return 0
+
+
+    def rmdir_fop (self, frame, this, loc, xflags, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('rmdir', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, xflags, xdata)
         return 0
