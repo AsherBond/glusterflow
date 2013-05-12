@@ -115,3 +115,14 @@ class xlator (Translator):
         # Continue on to the next translator
         dl.unwind_create(frame,cookie,this,op_ret,op_errno,fd,inode,buf,preparent,postparent,xdata)
         return 0
+
+    def open_fop (self, frame, this, loc, flags, fd, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('open', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, flags, fd, xdata)
+        return 0
+
+
