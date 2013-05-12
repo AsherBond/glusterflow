@@ -96,7 +96,7 @@ class xlator (Translator):
         send_message('open', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, flags, fd, xdata)
+        dl.wind_open(frame, POINTER(xlator_t)(), loc, flags, fd, xdata)
         return 0
 
 
@@ -106,8 +106,8 @@ class xlator (Translator):
         send_message('readv', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, flags,
-                       xdata)
+        dl.wind_readv(frame, POINTER(xlator_t)(), fd, size, offset, flags,
+                      xdata)
         return 0
 
 
@@ -118,8 +118,8 @@ class xlator (Translator):
         send_message('writev', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), frame, this, fd, vector,
-                       count, offset, flags, iobref, xdata)
+        dl.wind_writev(frame, POINTER(xlator_t)(), fd, vector, count, offset,
+                       flags, iobref, xdata)
         return 0
 
 
@@ -129,7 +129,7 @@ class xlator (Translator):
         send_message('opendir', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, fd, xdata)
+        dl.wind_opendir(frame, POINTER(xlator_t)(), loc, fd, xdata)
         return 0
 
 
@@ -139,7 +139,7 @@ class xlator (Translator):
         send_message('readdir', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
+        dl.wind_readdir(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
         return 0
 
 
@@ -149,19 +149,18 @@ class xlator (Translator):
         send_message('readdirp', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
+        dl.wind_readdirp(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
         return 0
 
 
-# Something wrong here.  Getting errors about "TypeError: this function takes at least 8 arguments (4 given)"
-#    def stat_fop (self, frame, this, loc, xdata):
+    def stat_fop (self, frame, this, loc, xdata):
 
-#        # Send GlusterFlow JSON message to collector
-#        send_message('stat', loc.contents.path)
+        # Send GlusterFlow JSON message to collector
+        send_message('stat', loc.contents.path)
 
-#        # Continue on to the next translator
-#        dl.wind_create(frame, POINTER(xlator_t)(), loc, xdata)
-#        return 0
+        # Continue on to the next translator
+        dl.wind_stat(frame, POINTER(xlator_t)(), loc, xdata)
+        return 0
 
 
     def fstat_fop (self, frame, this, fd, xdata):
@@ -170,7 +169,7 @@ class xlator (Translator):
         send_message('fstat', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, xdata)
+        dl.wind_fstat(frame, POINTER(xlator_t)(), fd, xdata)
         return 0
 
 
@@ -180,7 +179,7 @@ class xlator (Translator):
         send_message('statfs', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, xdata)
+        dl.wind_statfs(frame, POINTER(xlator_t)(), loc, xdata)
         return 0
 
 
@@ -190,8 +189,8 @@ class xlator (Translator):
         send_message('setxattr', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, dictionary, flags,
-                       xdata)
+        dl.wind_setxattr(frame, POINTER(xlator_t)(), loc, dictionary, flags,
+                         xdata)
         return 0
 
 
@@ -201,7 +200,7 @@ class xlator (Translator):
         send_message('getxattr', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, name, xdata)
+        dl.wind_getxattr(frame, POINTER(xlator_t)(), loc, name, xdata)
         return 0
 
 
@@ -211,8 +210,8 @@ class xlator (Translator):
         send_message('fsetxattr', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, dictionary, flags,
-                       xdata)
+        dl.wind_fsetxattr(frame, POINTER(xlator_t)(), fd, dictionary, flags,
+                          xdata)
         return 0
 
 
@@ -222,7 +221,7 @@ class xlator (Translator):
         send_message('fgetxattr', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, name, xdata)
+        dl.wind_fgetxattr(frame, POINTER(xlator_t)(), fd, name, xdata)
         return 0
 
 
@@ -232,7 +231,7 @@ class xlator (Translator):
         send_message('removexattr', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, name, xdata)
+        dl.wind_removexattr(frame, POINTER(xlator_t)(), loc, name, xdata)
         return 0
 
 
@@ -242,7 +241,7 @@ class xlator (Translator):
         send_message('fremovexattr', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, name, xdata)
+        dl.wind_fremovexattr(frame, POINTER(xlator_t)(), fd, name, xdata)
         return 0
 
 
@@ -253,7 +252,7 @@ class xlator (Translator):
         send_message('link', oldloc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), oldloc, newloc, xdata)
+        dl.wind_link(frame, POINTER(xlator_t)(), oldloc, newloc, xdata)
         return 0
 
 
@@ -263,8 +262,8 @@ class xlator (Translator):
         send_message('symlink', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), linkname, loc, umask,
-                       xdata)
+        dl.wind_symlink(frame, POINTER(xlator_t)(), linkname, loc, umask,
+                        xdata)
         return 0
 
 
@@ -274,7 +273,7 @@ class xlator (Translator):
         send_message('unlink', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, xflags, xdata)
+        dl.wind_unlink(frame, POINTER(xlator_t)(), loc, xflags, xdata)
         return 0
 
 
@@ -284,7 +283,7 @@ class xlator (Translator):
         send_message('readlink', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, size, xdata)
+        dl.wind_readlink(frame, POINTER(xlator_t)(), loc, size, xdata)
         return 0
 
 
@@ -294,7 +293,7 @@ class xlator (Translator):
         send_message('mkdir', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, mode, umask, xdata)
+        dl.wind_mkdir(frame, POINTER(xlator_t)(), loc, mode, umask, xdata)
         return 0
 
 
@@ -304,5 +303,5 @@ class xlator (Translator):
         send_message('rmdir', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), loc, xflags, xdata)
+        dl.wind_rmdir(frame, POINTER(xlator_t)(), loc, xflags, xdata)
         return 0
