@@ -182,3 +182,13 @@ class xlator (Translator):
         # Continue on to the next translator
         dl.wind_create(frame, POINTER(xlator_t)(), loc, xdata)
         return 0
+
+
+    def setxattr_fop (self, frame, this, loc, dictionary, flags, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('setxattr', loc.contents.path)
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), loc, dictionary, flags, xdata)
+        return 0
