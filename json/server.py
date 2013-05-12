@@ -26,35 +26,31 @@ debug = 0
 
 class MyUDPServerHandler(DatagramProtocol):
     def datagramReceived(self, data, (host, port)):
+
+        # Receive JSON message
+        gl_data = json.loads(data.strip())
+
+        # Display the JSON message (for now only)
+        if debug == 1:
+            if gl_data:
+                print 'DEBUG: ' + repr(gl_data)
+
         try:
-            # Receive JSON message
-            gl_data = json.loads(data.strip())
 
-            # Display the JSON message (for now only)
-            if debug == 1:
-                if gl_data:
-                    print 'DEBUG: ' + repr(gl_data)
+            # Insert the JSON message contents into the database
+            cur = conn.cursor()
+            insert_string = 'INSERT into ui_flowdata(server, protocol, operation, filename, start_time) VALUES (%s, %s, %s, %s, %s)'
+            cur.execute(insert_string, (gl_data['server'], gl_data['gf_protocol'], gl_data['operation'], gl_data['file'], gl_data['start']))
+            conn.commit()
 
-            try:
+        except psycopg2.DatabaseError, e:
 
-                # Insert the JSON message contents into the database
-                cur = conn.cursor()
-                insert_string = 'INSERT into ui_flowdata(server, protocol, operation, filename, start_time) VALUES (%s, %s, %s, %s, %s)'
-                cur.execute(insert_string, (gl_data['server'], gl_data['protocol'], gl_data['operation'], gl_data['file'], gl_data['start']))
-                conn.commit()
+            # Something went wrong with the insert
+            if conn:
+                conn.rollback()
 
-            except psycopg2.DatabaseError, e:
-
-                # Something went wrong with the insert
-                if conn:
-                    conn.rollback()
-
-                # Display the error
-                print 'DEBUG: Error %s' % e
-
-        except Exception, e:
-            print 'ERROR: Exception encountered when receiving JSON message: ', e
-
+            # Display the error
+            print 'DEBUG: Error %s' % e
 
 # Display startup banner
 print "GlusterFlow JSON Server " + gf_json_server_ver
