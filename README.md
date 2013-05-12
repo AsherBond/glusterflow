@@ -173,7 +173,7 @@ GlusterFS nodes.
 
 __2. The JSON client__
 
-The JSON client is a Glupy translator.  Instructions for installing translators
+The JSON client is a Glupy translator.  Instructions for using translators
 can be found on the Glupy page:
 
 &nbsp; &nbsp; &nbsp; https://github.com/jdarcy/glupy
