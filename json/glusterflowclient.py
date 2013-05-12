@@ -79,20 +79,6 @@ class xlator (Translator):
         return 0
 
 
-    def lookup_cbk (self, frame, cookie, this, op_ret, op_errno, inode, buf, xdata, postparent):
-
-        # Log the operation and full path name
-        # Ugh, can't seem to access any useful file info in the callback (so far) :(
-        # ...
-
-        # Log request finish time
-        # ...
-
-        # Continue on to the next translator
-        dl.unwind_lookup(frame,cookie,this,op_ret,op_errno,inode,buf,xdata,postparent)
-        return 0
-
-
     def create_fop (self, frame, this, loc, flags, mode, umask, fd, xdata):
 
         # Send GlusterFlow JSON message to collector
@@ -102,19 +88,6 @@ class xlator (Translator):
         dl.wind_create(frame,POINTER(xlator_t)(),loc,flags,mode,umask,fd,xdata)
         return 0
 
-
-    def create_cbk (self, frame, cookie, this, op_ret, op_errno, fd, inode, buf, preparent, postparent, xdata):
-
-        # Log the operation and full path name
-        # Ugh, can't seem to access any useful file info in the callback (so far) :(
-        # ...
-
-        # Log request finish time
-        # ...
-
-        # Continue on to the next translator
-        dl.unwind_create(frame,cookie,this,op_ret,op_errno,fd,inode,buf,preparent,postparent,xdata)
-        return 0
 
     def open_fop (self, frame, this, loc, flags, fd, xdata):
 
