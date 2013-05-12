@@ -126,8 +126,18 @@ class xlator (Translator):
     def opendir_fop (self, frame, this, loc, fd, xdata):
 
         # Send GlusterFlow JSON message to collector
-        send_message('opendir', 'fd')
+        send_message('opendir', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_create(frame, POINTER(xlator_t)(), loc, fd, xdata)
+        return 0
+
+
+    def readdir_fop (self, frame, this, fd, size, offset, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('readdir', 'fd')
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
         return 0
