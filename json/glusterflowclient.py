@@ -75,7 +75,7 @@ class xlator (Translator):
         send_message('lookup', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_lookup(frame,POINTER(xlator_t)(),loc,xdata)
+        dl.wind_lookup(frame,POINTER(xlator_t)(), loc, xdata)
         return 0
 
 
@@ -106,5 +106,19 @@ class xlator (Translator):
         send_message('readv', 'fd')
 
         # Continue on to the next translator
-        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, flags, xdata)
+        dl.wind_create(frame, POINTER(xlator_t)(), fd, size, offset, flags,
+                       xdata)
         return 0
+
+
+    def writev_fop (self, frame, this, fd, vector, count, offset, flags,
+                    iobref, xdata):
+
+        # Send GlusterFlow JSON message to collector
+        send_message('writev', 'fd')
+
+        # Continue on to the next translator
+        dl.wind_create(frame, POINTER(xlator_t)(), frame, this, fd, vector,
+                       count, offset, flags, iobref, xdata)
+        return 0
+
