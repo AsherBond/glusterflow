@@ -10,7 +10,11 @@ Where to find yours
 On RHEL/CentOS 6.x, the GlusterFS server creates its native .vol files in
 directories under:
 
-    /var/lib/glusterd/vols/
+    /var/lib/glusterd/vols/[volumename]/[volumename].[hostname].[full-path-name-of-brick].vol
+
+For example:
+
+    /var/lib/glusterd/vols/examplevolume/examplevolume.examplehost.export-brick1-glusterfs.vol
 
 Adding GlusterFlow to yours
 ---------------------------
