@@ -21,6 +21,46 @@ enable_lookup_fop = 0
 enable_lookup_cbk = 0
 enable_create_fop = 0
 enable_create_cbk = 0
+enable_open_fop = 0
+enable_open_cbk = 0
+enable_readv_fop = 0
+enable_readv_cbk = 0
+enable_writev_fop = 0
+enable_writev_cbk = 0
+enable_opendir_fop = 0
+enable_opendir_cbk = 0
+enable_readdir_fop = 0
+enable_readdir_cbk = 0
+enable_readdirp_fop = 0
+enable_readdirp_cbk = 0
+enable_mkdir_fop = 0
+enable_mkdir_cbk = 0
+enable_rmdir_fop = 0
+enable_rmdir_cbk = 0
+enable_stat_fop = 0
+enable_stat_cbk = 0
+enable_fstat_fop = 0
+enable_fstat_cbk = 0
+enable_statfs_fop = 0
+enable_statfs_cbk = 0
+enable_getxattr_fop = 0
+enable_getxattr_cbk = 0
+enable_fgetxattr_fop = 0
+enable_fgetxattr_cbk = 0
+enable_setxattr_fop = 0
+enable_setxattr_cbk = 0
+enable_fsetxattr_fop = 0
+enable_fsetxattr_cbk = 0
+enable_removexattr_fop = 0
+enable_removexattr_cbk = 0
+enable_link_fop = 0
+enable_link_cbk = 0
+enable_unlink_fop = 0
+enable_unlink_cbk = 0
+enable_readlink_fop = 0
+enable_readlink_cbk = 0
+enable_symlink_fop = 0
+enable_symlink_cbk = 0
 
 
 def uuid2str (gfid):
@@ -110,48 +150,46 @@ class xlator(Translator):
                 self.gfids = {}
 
         def lookup_fop(self, frame, this, loc, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(loc.contents.gfid)
                 if enable_lookup_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(loc.contents.gfid)
                         print("GLUPY TRACE LOOKUP FOP- {0:d}: gfid={1:s}; " +
                               "path={2:s}").format(unique, gfid, loc.contents.path)
-                self.gfids[key] = gfid
+                        self.gfids[key] = gfid
                 dl.wind_lookup(frame, POINTER(xlator_t)(), loc, xdata)
                 return 0
 
-        def lookup_cbk(self, frame, cookie, this, op_ret, op_errno,
-                       inode, buf, xdata, postparent):
-                unique =dl.get_rootunique(frame)
-                key =dl.get_id(frame)
-                if op_ret == 0:
-                        gfid = uuid2str(buf.contents.ia_gfid)
-                        statstr = trace_stat2str(buf)
-                        postparentstr = trace_stat2str(postparent)
-                        if enable_lookup_cbk:
+        def lookup_cbk(self, frame, cookie, this, op_ret, op_errno, inode,
+                       buf, xdata, postparent):
+                if enable_lookup_cbk:
+                        unique =dl.get_rootunique(frame)
+                        key =dl.get_id(frame)
+                        if op_ret == 0:
+                                gfid = uuid2str(buf.contents.ia_gfid)
+                                statstr = trace_stat2str(buf)
+                                postparentstr = trace_stat2str(postparent)
                                 print("GLUPY TRACE LOOKUP CBK- {0:d}: gfid={1:s}; "+
                                       "op_ret={2:d}; *buf={3:s}; " +
                                       "*postparent={4:s}").format(unique, gfid,
                                                                   op_ret, statstr,
                                                                   postparentstr)
-                else:
-                        gfid = self.gfids[key]
-                        if enable_lookup_cbk:
+                        else:
+                                gfid = self.gfids[key]
                                 print("GLUPY TRACE LOOKUP CBK - {0:d}: gfid={1:s};" +
                                       " op_ret={2:d}; op_errno={3:d}").format(unique,
                                                                               gfid,
                                                                               op_ret,
                                                                               op_errno)
-                del self.gfids[key]
+                        del self.gfids[key]
                 dl.unwind_lookup(frame, cookie, this, op_ret, op_errno,
                                  inode, buf, xdata, postparent)
                 return 0
 
-        def create_fop(self, frame, this, loc, flags, mode, umask, fd,
-                       xdata):
-                unique = dl.get_rootunique(frame)
-                gfid = uuid2str(loc.contents.gfid)
+        def create_fop(self, frame, this, loc, flags, mode, umask, fd, xdata):
                 if enable_create_fop:
+                        unique = dl.get_rootunique(frame)
+                        gfid = uuid2str(loc.contents.gfid)
                         print("GLUPY TRACE CREATE FOP- {0:d}: gfid={1:s}; path={2:s}; " +
                               "fd={3:s}; flags=0{4:o}; mode=0{5:o}; " +
                               "umask=0{6:o}").format(unique, gfid, loc.contents.path,
@@ -162,13 +200,13 @@ class xlator(Translator):
 
         def create_cbk(self, frame, cookie, this, op_ret, op_errno, fd,
                        inode, buf, preparent, postparent, xdata):
-                unique = dl.get_rootunique(frame)
-                if op_ret >= 0:
-                        gfid = uuid2str(inode.contents.gfid)
-                        statstr = trace_stat2str(buf)
-                        preparentstr = trace_stat2str(preparent)
-                        postparentstr = trace_stat2str(postparent)
-                        if enable_create_cbk:
+                if enable_create_cbk:
+                        unique = dl.get_rootunique(frame)
+                        if op_ret >= 0:
+                                gfid = uuid2str(inode.contents.gfid)
+                                statstr = trace_stat2str(buf)
+                                preparentstr = trace_stat2str(preparent)
+                                postparentstr = trace_stat2str(postparent)
                                 print("GLUPY TRACE CREATE CBK- {0:d}: gfid={1:s};" +
                                       " op_ret={2:d}; fd={3:s}; *stbuf={4:s}; " +
                                       "*preparent={5:s};" +
@@ -176,8 +214,7 @@ class xlator(Translator):
                                                                    fd, statstr,
                                                                    preparentstr,
                                                                    postparentstr)
-                else:
-                        if enable_create_cbk:
+                        else:
                                 print ("GLUPY TRACE CREATE CBK- {0:d}: op_ret={1:d}; " +
                                        "op_errno={2:d}").format(unique, op_ret, op_errno)
                 dl.unwind_create(frame, cookie, this, op_ret, op_errno, fd,
@@ -185,174 +222,198 @@ class xlator(Translator):
                 return 0
 
         def open_fop(self, frame, this, loc, flags, fd, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(loc.contents.inode.contents.gfid)
-                print("GLUPY TRACE OPEN FOP- {0:d}: gfid={1:s}; path={2:s}; "+
-                      "flags={3:d}; fd={4:s}").format(unique, gfid,
-                                                      loc.contents.path, flags,
-                                                      fd)
-                self.gfids[key] = gfid
+                if enable_open_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(loc.contents.inode.contents.gfid)
+                        print("GLUPY TRACE OPEN FOP- {0:d}: gfid={1:s}; path={2:s}; "+
+                              "flags={3:d}; fd={4:s}").format(unique, gfid,
+                                                              loc.contents.path, flags,
+                                                              fd)
+                        self.gfids[key] = gfid
                 dl.wind_open(frame, POINTER(xlator_t)(), loc, flags, fd, xdata)
                 return 0
 
         def open_cbk(self, frame, cookie, this, op_ret, op_errno, fd, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = self.gfids[key]
-                print("GLUPY TRACE OPEN CBK- {0:d}: gfid={1:s}; op_ret={2:d}; "
-                      "op_errno={3:d}; *fd={4:s}").format(unique, gfid,
-                                                          op_ret, op_errno, fd)
-                del self.gfids[key]
-                dl.unwind_open(frame, cookie, this, op_ret, op_errno, fd,
-                               xdata)
+                if enable_open_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = self.gfids[key]
+                        print("GLUPY TRACE OPEN CBK- {0:d}: gfid={1:s}; op_ret={2:d}; "
+                              "op_errno={3:d}; *fd={4:s}").format(unique, gfid,
+                                                                  op_ret, op_errno, fd)
+                        del self.gfids[key]
+                dl.unwind_open(frame, cookie, this, op_ret, op_errno, fd, xdata)
                 return 0
 
         def readv_fop(self, frame, this, fd, size, offset, flags, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(fd.contents.inode.contents.gfid)
-                print("GLUPY TRACE READV FOP- {0:d}: gfid={1:s}; "+
-                      "fd={2:s}; size ={3:d}; offset={4:d}; " +
-                      "flags=0{5:x}").format(unique, gfid, fd, size, offset,
-                                             flags)
-                self.gfids[key] = gfid
+                if enable_readv_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(fd.contents.inode.contents.gfid)
+                        print("GLUPY TRACE READV FOP- {0:d}: gfid={1:s}; "+
+                              "fd={2:s}; size ={3:d}; offset={4:d}; " +
+                              "flags=0{5:x}").format(unique, gfid, fd, size, offset,
+                                                     flags)
+                        self.gfids[key] = gfid
                 dl.wind_readv (frame, POINTER(xlator_t)(), fd, size, offset,
                                flags, xdata)
                 return 0
 
         def readv_cbk(self, frame, cookie, this, op_ret, op_errno, vector,
                       count, buf, iobref, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = self.gfids[key]
-                if op_ret >= 0:
-                        statstr = trace_stat2str(buf)
-                        print("GLUPY TRACE READV CBK- {0:d}: gfid={1:s}, "+
-                              "op_ret={2:d}; *buf={3:s};").format(unique, gfid,
-                                                                  op_ret,
-                                                                  statstr)
-
-                else:
-                        print("GLUPY TRACE READV CBK- {0:d}: gfid={1:s}, "+
-                              "op_ret={2:d}; op_errno={3:d}").format(unique,
-                                                                     gfid,
-                                                                     op_ret,
-                                                                     op_errno)
-                del self.gfids[key]
+                if enable_readv_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = self.gfids[key]
+                        if op_ret >= 0:
+                                statstr = trace_stat2str(buf)
+                                print("GLUPY TRACE READV CBK- {0:d}: gfid={1:s}, "+
+                                      "op_ret={2:d}; *buf={3:s};").format(unique, gfid,
+                                                                          op_ret,
+                                                                          statstr)
+                        else:
+                                print("GLUPY TRACE READV CBK- {0:d}: gfid={1:s}, "+
+                                      "op_ret={2:d}; op_errno={3:d}").format(unique,
+                                                                             gfid,
+                                                                             op_ret,
+                                                                             op_errno)
+                        del self.gfids[key]
                 dl.unwind_readv (frame, cookie, this, op_ret, op_errno,
                                  vector, count, buf, iobref, xdata)
                 return 0
 
         def writev_fop(self, frame, this, fd, vector, count, offset, flags,
                        iobref, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(fd.contents.inode.contents.gfid)
-                print("GLUPY TRACE  WRITEV FOP- {0:d}: gfid={1:s}; " +
-                      "fd={2:s}; count={3:d}; offset={4:d}; " +
-                      "flags=0{5:x}").format(unique, gfid, fd, count, offset,
-                                             flags)
-                self.gfids[key] = gfid
+                if enable_writev_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(fd.contents.inode.contents.gfid)
+                        print("GLUPY TRACE  WRITEV FOP- {0:d}: gfid={1:s}; " +
+                              "fd={2:s}; count={3:d}; offset={4:d}; " +
+                              "flags=0{5:x}").format(unique, gfid, fd, count, offset,
+                                                     flags)
+                        self.gfids[key] = gfid
                 dl.wind_writev(frame, POINTER(xlator_t)(), fd, vector, count,
                                offset, flags, iobref, xdata)
                 return 0
 
         def writev_cbk(self, frame, cookie, this, op_ret, op_errno, prebuf,
                        postbuf, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                if op_ret >= 0:
-                        preopstr = trace_stat2str(prebuf)
-                        postopstr = trace_stat2str(postbuf)
-                        print("GLUPY TRACE WRITEV CBK- {0:d}: op_ret={1:d}; " +
-                              "*prebuf={2:s}; " +
-                              "*postbuf={3:s}").format(unique, op_ret, preopstr,
-                                                       postopstr)
-                else:
-                        gfid = self.gfids[key]
-                        print("GLUPY TRACE WRITEV CBK- {0:d}: gfid={1:s}; "+
-                              "op_ret={2:d}; op_errno={3:d}").format(unique,
-                                                                     gfid,
-                                                                     op_ret,
-                                                                     op_errno)
-                del self.gfids[key]
+                if enable_writev_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        if op_ret >= 0:
+                                preopstr = trace_stat2str(prebuf)
+                                postopstr = trace_stat2str(postbuf)
+                                print("GLUPY TRACE WRITEV CBK- {0:d}: op_ret={1:d}; " +
+                                      "*prebuf={2:s}; " +
+                                      "*postbuf={3:s}").format(unique, op_ret, preopstr,
+                                                               postopstr)
+                        else:
+                                gfid = self.gfids[key]
+                                print("GLUPY TRACE WRITEV CBK- {0:d}: gfid={1:s}; "+
+                                      "op_ret={2:d}; op_errno={3:d}").format(unique,
+                                                                             gfid,
+                                                                             op_ret,
+                                                                             op_errno)
+                        del self.gfids[key]
                 dl.unwind_writev (frame, cookie, this, op_ret, op_errno,
                                   prebuf, postbuf, xdata)
                 return 0
 
         def opendir_fop(self, frame, this, loc, fd, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(loc.contents.inode.contents.gfid)
-                print("GLUPY TRACE OPENDIR FOP- {0:d}: gfid={1:s}; path={2:s}; "+
-                      "fd={3:s}").format(unique, gfid, loc.contents.path, fd)
-                self.gfids[key] = gfid
+                if enable_opendir_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(loc.contents.inode.contents.gfid)
+                        print("GLUPY TRACE OPENDIR FOP- {0:d}: gfid={1:s}; path={2:s}; "+
+                              "fd={3:s}").format(unique, gfid, loc.contents.path, fd)
+                        self.gfids[key] = gfid
                 dl.wind_opendir(frame, POINTER(xlator_t)(), loc, fd, xdata)
                 return 0
 
         def opendir_cbk(self, frame, cookie, this, op_ret, op_errno, fd,
                         xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = self.gfids[key]
-                print("GLUPY TRACE OPENDIR CBK- {0:d}: gfid={1:s}; op_ret={2:d};"+
-                      " op_errno={3:d}; fd={4:s}").format(unique, gfid, op_ret,
-                                                          op_errno, fd)
-                del self.gfids[key]
-                dl.unwind_opendir(frame, cookie, this, op_ret, op_errno,
-                                  fd, xdata)
+                if enable_opendir_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = self.gfids[key]
+                        print("GLUPY TRACE OPENDIR CBK- {0:d}: gfid={1:s}; op_ret={2:d}; "+
+                              "op_errno={3:d}; fd={4:s}").format(unique,
+                                                                 gfid,
+                                                                 op_ret,
+                                                                 op_errno,
+                                                                 fd)
+                        del self.gfids[key]
+                dl.unwind_opendir(frame, cookie, this, op_ret, op_errno, fd,
+                                  xdata)
                 return 0
 
         def readdir_fop(self, frame, this, fd, size, offset, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(fd.contents.inode.contents.gfid)
-                print("GLUPY TRACE READDIR FOP- {0:d}:  gfid={1:s}; fd={2:s}; " +
-                      "size={3:d}; offset={4:d}").format(unique, gfid, fd, size,
-                                                         offset)
-                self.gfids[key] = gfid
+                if enable_readdir_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(fd.contents.inode.contents.gfid)
+                        print("GLUPY TRACE READDIR FOP- {0:d}:  gfid={1:s}; fd={2:s}; " +
+                              "size={3:d}; offset={4:d}").format(unique,
+                                                                 gfid,
+                                                                 fd, size,
+                                                                 offset)
+                        self.gfids[key] = gfid
                 dl.wind_readdir(frame, POINTER(xlator_t)(), fd, size, offset,
                                 xdata)
                 return 0
 
         def readdir_cbk(self, frame, cookie, this, op_ret, op_errno, buf,
                         xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = self.gfids[key]
-                print("GLUPY TRACE READDIR CBK- {0:d}: gfid={1:s}; op_ret={2:d};"+
-                      " op_errno={3:d}").format(unique, gfid, op_ret, op_errno)
-                del self.gfids[key]
+                if enable_readdir_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = self.gfids[key]
+                        print("GLUPY TRACE READDIR CBK- {0:d}: gfid={1:s}; "+
+                              "op_ret={2:d}; op_errno={3:d}").format(unique,
+                                                                     gfid,
+                                                                     op_ret,
+                                                                     op_errno)
+                        del self.gfids[key]
                 dl.unwind_readdir(frame, cookie, this, op_ret, op_errno, buf,
                                   xdata)
                 return 0
 
         def readdirp_fop(self, frame, this, fd, size, offset, dictionary):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(fd.contents.inode.contents.gfid)
-                print("GLUPY TRACE READDIR FOP- {0:d}: gfid={1:s}; fd={2:s}; "+
-                      " size={3:d}; offset={4:d}").format(unique, gfid, fd, size,
-                                                          offset)
-                self.gfids[key] = gfid
+                if enable_readdirp_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(fd.contents.inode.contents.gfid)
+                        print("GLUPY TRACE READDIR FOP- {0:d}: gfid={1:s}; "+
+                              "fd={2:s}; size={3:d}; "+
+                              "offset={4:d}").format(unique, gfid, fd, size,
+                                                     offset)
+                        self.gfids[key] = gfid
                 dl.wind_readdirp(frame, POINTER(xlator_t)(), fd, size, offset,
                                  dictionary)
                 return 0
 
         def readdirp_cbk(self, frame, cookie, this, op_ret, op_errno, buf,
                          xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-#                gfid = self.gfids[key]
-                print("GLUPY TRACE READDIRP CBK- {0:d}: key={1:d}; "+
-                      "op_ret={2:d}; op_errno={3:d}").format(unique, key, op_ret, op_errno)
-#                print("GLUPY TRACE READDIRP CBK- {0:d}: gfid={1:s}; "+
-#                      "op_ret={2:d}; op_errno={3:d}").format(unique, gfid,
-#                                                             op_ret, op_errno)
-#                del self.gfids[key]
+                if enable_readdirp_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+#                        gfid = self.gfids[key]
+                        print("GLUPY TRACE READDIRP CBK- {0:d}: key={1:d}; "+
+                              "op_ret={2:d}; op_errno={3:d}").format(unique,
+                                                                     key,
+                                                                     op_ret,
+                                                                     op_errno)
+#                        print("GLUPY TRACE READDIRP CBK- {0:d}: gfid={1:s}; "+
+#                              "op_ret={2:d}; op_errno={3:d}").format(unique,
+#                                                                     gfid,
+#                                                                     op_ret,
+#                                                                     op_errno)
+#                        del self.gfids[key]
                 dl.unwind_readdirp(frame, cookie, this, op_ret, op_errno, buf,
-                                  xdata)
+                                   xdata)
                 return 0
 
         def mkdir_fop(self, frame, this, loc, mode, umask, xdata):
@@ -360,7 +421,8 @@ class xlator(Translator):
                 gfid = uuid2str(loc.contents.inode.contents.gfid)
                 print("GLUPY TRACE MKDIR FOP- {0:d}: gfid={1:s}; path={2:s}; " +
                       "mode={3:d}; umask=0{4:o}").format(unique, gfid,
-                                                         loc.contents.path, mode,
+                                                         loc.contents.path,
+                                                         mode,
                                                          umask)
                 dl.wind_mkdir(frame, POINTER(xlator_t)(), loc, mode, umask,
                               xdata)
@@ -423,34 +485,36 @@ class xlator(Translator):
                 return 0
 
         def stat_fop(self, frame, this, loc, xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = uuid2str(loc.contents.inode.contents.gfid)
-                print("GLUPY TRACE STAT FOP- {0:d}: gfid={1:s}; " +
-                      " path={2:s}").format(unique, gfid, loc.contents.path)
-                self.gfids[key] = gfid
+                if enable_stat_fop:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = uuid2str(loc.contents.inode.contents.gfid)
+                        print("GLUPY TRACE STAT FOP- {0:d}: gfid={1:s}; " +
+                              " path={2:s}").format(unique, gfid,
+                                                    loc.contents.path)
+                        self.gfids[key] = gfid
                 dl.wind_stat(frame, POINTER(xlator_t)(), loc, xdata)
                 return 0
 
         def stat_cbk(self, frame, cookie, this, op_ret, op_errno, buf,
                      xdata):
-                unique = dl.get_rootunique(frame)
-                key = dl.get_id(frame)
-                gfid = self.gfids[key]
-                if op_ret == 0:
-                        statstr = trace_stat2str(buf)
-                        print("GLUPY TRACE STAT CBK- {0:d}: gfid={1:s}; "+
-                              "op_ret={2:d};  *buf={3:s};").format(unique,
-                                                                   gfid,
-                                                                   op_ret,
-                                                                   statstr)
-                else:
-                        print("GLUPY TRACE STAT CBK- {0:d}: gfid={1:s}; "+
-                              "op_ret={2:d}; op_errno={3:d}").format(unique,
-                                                                     gfid,
-                                                                     op_ret,
-                                                                     op_errno)
-                del self.gfids[key]
+                if enable_stat_cbk:
+                        unique = dl.get_rootunique(frame)
+                        key = dl.get_id(frame)
+                        gfid = self.gfids[key]
+                        if op_ret == 0:
+                                statstr = trace_stat2str(buf)
+                                print("GLUPY TRACE STAT CBK- {0:d}: "+
+                                      "gfid={1:s}; op_ret={2:d}; "+
+                                      "*buf={3:s};").format(unique, gfid,
+                                                            op_ret, statstr)
+                        else:
+                                print("GLUPY TRACE STAT CBK- {0:d}: "+
+                                      "gfid={1:s}; op_ret={2:d}; "+
+                                      "op_errno={3:d}").format(unique, gfid,
+                                                               op_ret,
+                                                               op_errno)
+                        del self.gfids[key]
                 dl.unwind_stat(frame, cookie, this, op_ret, op_errno,
                                buf, xdata)
                 return 0
