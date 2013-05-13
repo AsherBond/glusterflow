@@ -173,10 +173,17 @@ GlusterFS nodes.
 
 __2. The JSON client__
 
-The JSON client is a Glupy translator.  Instructions for using translators
-can be found on the Glupy page:
+The JSON client is a Glupy translator, so you will need to add this translator
+to your GlusterFS .vol files.
+
+Instructions for using translators can be found on the Glupy page:
 
 &nbsp; &nbsp; &nbsp; https://github.com/jdarcy/glupy
+
+The GlusterFlow repo itself comes with good examples, in the vol_files
+directory:
+
+&nbsp; &nbsp; &nbsp; https://github.com/justinclift/glusterflow/tree/master/vol_files
 
 __3. The web application__
 

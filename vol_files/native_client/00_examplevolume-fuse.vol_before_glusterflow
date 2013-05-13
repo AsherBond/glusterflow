@@ -1,0 +1,48 @@
+volume examplevolume-client-0
+    type protocol/client
+    option transport-type tcp
+    option remote-subvolume /export/brick1/glusterfs
+    option remote-host examplehost
+end-volume
+
+volume examplevolume-dht
+    type cluster/distribute
+    subvolumes examplevolume-client-0
+end-volume
+
+volume examplevolume-write-behind
+    type performance/write-behind
+    subvolumes examplevolume-dht
+end-volume
+
+volume examplevolume-read-ahead
+    type performance/read-ahead
+    subvolumes examplevolume-write-behind
+end-volume
+
+volume examplevolume-io-cache
+    type performance/io-cache
+    subvolumes examplevolume-read-ahead
+end-volume
+
+volume examplevolume-quick-read
+    type performance/quick-read
+    subvolumes examplevolume-io-cache
+end-volume
+
+volume examplevolume-open-behind
+    type performance/open-behind
+    subvolumes examplevolume-quick-read
+end-volume
+
+volume examplevolume-md-cache
+    type performance/md-cache
+    subvolumes examplevolume-open-behind
+end-volume
+
+volume examplevolume
+    type debug/io-stats
+    option count-fop-hits off
+    option latency-measurement off
+    subvolumes examplevolume-md-cache
+end-volume
