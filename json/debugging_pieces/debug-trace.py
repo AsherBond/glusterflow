@@ -15,6 +15,14 @@ dl.get_id.argtypes = [ POINTER(call_frame_t) ]
 dl.get_rootunique.restype = c_uint64
 dl.get_rootunique.argtypes = [ POINTER(call_frame_t) ]
 
+# Enable/disable the output from each callback - makes for easier targeted
+# debugging
+enable_lookup_fop = 0
+enable_lookup_cbk = 0
+enable_create_fop = 0
+enable_create_cbk = 0
+
+
 def uuid2str (gfid):
         return str(UUID(''.join(map("{0:02x}".format, gfid))))
 
@@ -105,8 +113,9 @@ class xlator(Translator):
                 unique = dl.get_rootunique(frame)
                 key = dl.get_id(frame)
                 gfid = uuid2str(loc.contents.gfid)
-                print("GLUPY TRACE LOOKUP FOP- {0:d}: gfid={1:s}; " +
-                      "path={2:s}").format(unique, gfid, loc.contents.path)
+                if enable_lookup_fop:
+                        print("GLUPY TRACE LOOKUP FOP- {0:d}: gfid={1:s}; " +
+                              "path={2:s}").format(unique, gfid, loc.contents.path)
                 self.gfids[key] = gfid
                 dl.wind_lookup(frame, POINTER(xlator_t)(), loc, xdata)
                 return 0
@@ -119,18 +128,20 @@ class xlator(Translator):
                         gfid = uuid2str(buf.contents.ia_gfid)
                         statstr = trace_stat2str(buf)
                         postparentstr = trace_stat2str(postparent)
-                        print("GLUPY TRACE LOOKUP CBK- {0:d}: gfid={1:s}; "+
-                              "op_ret={2:d}; *buf={3:s}; " +
-                              "*postparent={4:s}").format(unique, gfid,
-                                                          op_ret, statstr,
-                                                          postparentstr)
+                        if enable_lookup_cbk:
+                                print("GLUPY TRACE LOOKUP CBK- {0:d}: gfid={1:s}; "+
+                                      "op_ret={2:d}; *buf={3:s}; " +
+                                      "*postparent={4:s}").format(unique, gfid,
+                                                                  op_ret, statstr,
+                                                                  postparentstr)
                 else:
                         gfid = self.gfids[key]
-                        print("GLUPY TRACE LOOKUP CBK - {0:d}: gfid={1:s};" +
-                              " op_ret={2:d}; op_errno={3:d}").format(unique,
-                                                                      gfid,
-                                                                      op_ret,
-                                                                      op_errno)
+                        if enable_lookup_cbk:
+                                print("GLUPY TRACE LOOKUP CBK - {0:d}: gfid={1:s};" +
+                                      " op_ret={2:d}; op_errno={3:d}").format(unique,
+                                                                              gfid,
+                                                                              op_ret,
+                                                                              op_errno)
                 del self.gfids[key]
                 dl.unwind_lookup(frame, cookie, this, op_ret, op_errno,
                                  inode, buf, xdata, postparent)
@@ -140,10 +151,11 @@ class xlator(Translator):
                        xdata):
                 unique = dl.get_rootunique(frame)
                 gfid = uuid2str(loc.contents.gfid)
-                print("GLUPY TRACE CREATE FOP- {0:d}: gfid={1:s}; path={2:s}; " +
-                      "fd={3:s}; flags=0{4:o}; mode=0{5:o}; " +
-                      "umask=0{6:o}").format(unique, gfid, loc.contents.path,
-                                             fd, flags, mode, umask)
+                if enable_create_fop:
+                        print("GLUPY TRACE CREATE FOP- {0:d}: gfid={1:s}; path={2:s}; " +
+                              "fd={3:s}; flags=0{4:o}; mode=0{5:o}; " +
+                              "umask=0{6:o}").format(unique, gfid, loc.contents.path,
+                                                     fd, flags, mode, umask)
                 dl.wind_create(frame, POINTER(xlator_t)(), loc, flags,mode,
                                umask, fd, xdata)
                 return 0
@@ -156,16 +168,18 @@ class xlator(Translator):
                         statstr = trace_stat2str(buf)
                         preparentstr = trace_stat2str(preparent)
                         postparentstr = trace_stat2str(postparent)
-                        print("GLUPY TRACE CREATE CBK- {0:d}: gfid={1:s};" +
-                              " op_ret={2:d}; fd={3:s}; *stbuf={4:s}; " +
-                              "*preparent={5:s};" +
-                              " *postparent={6:s}").format(unique, gfid, op_ret,
-                                                           fd, statstr,
-                                                           preparentstr,
-                                                           postparentstr)
+                        if enable_create_cbk:
+                                print("GLUPY TRACE CREATE CBK- {0:d}: gfid={1:s};" +
+                                      " op_ret={2:d}; fd={3:s}; *stbuf={4:s}; " +
+                                      "*preparent={5:s};" +
+                                      " *postparent={6:s}").format(unique, gfid, op_ret,
+                                                                   fd, statstr,
+                                                                   preparentstr,
+                                                                   postparentstr)
                 else:
-                        print ("GLUPY TRACE CREATE CBK- {0:d}: op_ret={1:d}; " +
-                              "op_errno={2:d}").format(unique, op_ret, op_errno)
+                        if enable_create_cbk:
+                                print ("GLUPY TRACE CREATE CBK- {0:d}: op_ret={1:d}; " +
+                                       "op_errno={2:d}").format(unique, op_ret, op_errno)
                 dl.unwind_create(frame, cookie, this, op_ret, op_errno, fd,
                                  inode, buf, preparent, postparent, xdata)
                 return 0
