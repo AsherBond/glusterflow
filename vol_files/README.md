@@ -11,7 +11,8 @@ for GlusterFlow.
 Each subdirectory has its own README.md file, explaining what's needed.
 
 You __can't__ generally just copy one of the full .vol files from here into
-your installation, because the embedded username/password pieces won't match.
+your installation, because the embedded username/password pieces won't match
+yours.
 
 But, the files here should demonstrate how you can modify your own .vol files
 to make things work.
