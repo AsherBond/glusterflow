@@ -110,27 +110,29 @@ class xlator (Translator):
         return 0
 
 
-    def readv_fop (self, frame, this, fd, size, offset, flags, xdata):
+# Commented out until I understand how to turn this into a filename
+#    def readv_fop (self, frame, this, fd, size, offset, flags, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.READV, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_readv(frame, POINTER(xlator_t)(), fd, size, offset, flags,
+#                      xdata)
+#        return 0
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.READV, 'fd')
 
-        # Continue on to the next translator
-        dl.wind_readv(frame, POINTER(xlator_t)(), fd, size, offset, flags,
-                      xdata)
-        return 0
-
-
-    def writev_fop (self, frame, this, fd, vector, count, offset, flags,
-                    iobref, xdata):
-
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.WRITEV, 'fd')
-
-        # Continue on to the next translator
-        dl.wind_writev(frame, POINTER(xlator_t)(), fd, vector, count, offset,
-                       flags, iobref, xdata)
-        return 0
+# Commented out until I understand how to turn this into a filename
+#    def writev_fop (self, frame, this, fd, vector, count, offset, flags,
+#                    iobref, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.WRITEV, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_writev(frame, POINTER(xlator_t)(), fd, vector, count, offset,
+#                       flags, iobref, xdata)
+#        return 0
 
 
     def opendir_fop (self, frame, this, loc, fd, xdata):
@@ -143,24 +145,26 @@ class xlator (Translator):
         return 0
 
 
-    def readdir_fop (self, frame, this, fd, size, offset, xdata):
+# Commented out until I understand how to turn this into a filename
+#    def readdir_fop (self, frame, this, fd, size, offset, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.READDIR, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_readdir(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
+#        return 0
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.READDIR, 'fd')
 
-        # Continue on to the next translator
-        dl.wind_readdir(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
-        return 0
-
-
-    def readdirp_fop (self, frame, this, fd, size, offset, xdata):
-
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.READDIRP, 'fd')
-
-        # Continue on to the next translator
-        dl.wind_readdirp(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
-        return 0
+# Commented out until I understand how to turn this into a filename
+#    def readdirp_fop (self, frame, this, fd, size, offset, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.READDIRP, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_readdirp(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
+#        return 0
 
 
     def stat_fop (self, frame, this, loc, xdata):
@@ -173,14 +177,15 @@ class xlator (Translator):
         return 0
 
 
-    def fstat_fop (self, frame, this, fd, xdata):
-
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.FSTAT, 'fd')
-
-        # Continue on to the next translator
-        dl.wind_fstat(frame, POINTER(xlator_t)(), fd, xdata)
-        return 0
+# Commented out until I understand how to turn this into a filename
+#    def fstat_fop (self, frame, this, fd, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.FSTAT, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_fstat(frame, POINTER(xlator_t)(), fd, xdata)
+#        return 0
 
 
     def statfs_fop (self, frame, this, loc, xdata):
@@ -214,25 +219,27 @@ class xlator (Translator):
         return 0
 
 
-    def fsetxattr_fop (self, frame, this, fd, dictionary, flags, xdata):
+# Commented out until I understand how to turn this into a filename
+#    def fsetxattr_fop (self, frame, this, fd, dictionary, flags, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.FSETXATTR, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_fsetxattr(frame, POINTER(xlator_t)(), fd, dictionary, flags,
+#                          xdata)
+#        return 0
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.FSETXATTR, 'fd')
 
-        # Continue on to the next translator
-        dl.wind_fsetxattr(frame, POINTER(xlator_t)(), fd, dictionary, flags,
-                          xdata)
-        return 0
-
-
-    def fgetxattr_fop (self, frame, this, fd, name, xdata):
-
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.FGETXATTR, 'fd')
-
-        # Continue on to the next translator
-        dl.wind_fgetxattr(frame, POINTER(xlator_t)(), fd, name, xdata)
-        return 0
+# Commented out until I understand how to turn this into a filename
+#    def fgetxattr_fop (self, frame, this, fd, name, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.FGETXATTR, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_fgetxattr(frame, POINTER(xlator_t)(), fd, name, xdata)
+#        return 0
 
 
     def removexattr_fop (self, frame, this, loc, name, xdata):
@@ -245,14 +252,15 @@ class xlator (Translator):
         return 0
 
 
-    def fremovexattr_fop (self, frame, this, fd, name, xdata):
-
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.FREMOVEXATTR, 'fd')
-
-        # Continue on to the next translator
-        dl.wind_fremovexattr(frame, POINTER(xlator_t)(), fd, name, xdata)
-        return 0
+# Commented out until I understand how to turn this into a filename
+#    def fremovexattr_fop (self, frame, this, fd, name, xdata):
+#
+#        # Send GlusterFlow JSON message to collector
+#        send_message(Fop.FREMOVEXATTR, 'fd')
+#
+#        # Continue on to the next translator
+#        dl.wind_fremovexattr(frame, POINTER(xlator_t)(), fd, name, xdata)
+#        return 0
 
 
     def link_fop (self, frame, this, oldloc, newloc, xdata):
