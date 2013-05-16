@@ -218,6 +218,8 @@ on all local addresses:
 To Do
 -----
 
+* Experiment with using counters on all file operations over each period of time, so reporting is super fast
+* Experiment with MongoDB and embedded documents.  Might also make for super fast reporting results
 * Expand the JSON client and server code (Python + Glupy) for more file operations.  Preferably all of them.  Shouldn't be too hard, just a bit time consuming.
 * Add real interactivity to the bar graph and busiest files list, to enable refinement and drilling down into data sets.
 * Add support for displaying data from multiple gluster hosts and clients (with appropriate selectors).
