@@ -11,12 +11,14 @@
     <script src="{% static 'ui/js/g.line-min.js.gz' %}"></script>
     <script src="{% static 'ui/js/g.pie-min.js.gz' %}"></script>
     <script>
+        // Javascript to display the bar chart
         window.onload = function () {
             var r;
-            // Set up the barchart and hover animation
+            // Set up the bar chart and hover animation
             r  = Raphael("chart"),
                 fin = function () {
-                    this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+                    this.flag = r.popup(this.bar.x, this.bar.y,
+                                        this.bar.value || "0").insertBefore(this);
                 },
                 fout = function () {
                     this.flag.animate({opacity: 0}, 300, function () {this.remove();});
@@ -45,10 +47,15 @@
 
             // Render the accompanying text
             r.text(310, 260, "File operations over the past 4 hours").attr(txtattr_big);
-            r.text(310, 282, "Each bar is 20 minutes").attr(txtattr_big);
+            r.text(310, 282, "Each bar is {{ delta }} minutes").attr(txtattr_big);
             r.text(28, 250, "4 hrs ago").attr(txtattr);
             r.text(569, 250, "Now").attr(txtattr);
         };
+    </script>
+    <script>
+        // Data array of busiest files
+        var busy_files = [{% for outer_row in busiest_files %}
+                [{% for inner_row in outer_row %}['{{ inner_row.filename }}', {{ inner_row.count }}]{% if not forloop.last %},{% endif %}{% endfor %}]{% if not forloop.last %},{% endif %}{% endfor %}];
     </script>
 </head>
 <body>
@@ -57,10 +64,11 @@
     <div id="chart"></div>
     <div id="info_rows">
         <h3>Busiest files</h3>
-        <table>
+        <table id="busy_files">
             <tr><th align="left">Filename</td><th># of file operations</td></tr>
+
             {% for row in busiest_files %}
-            <tr><td align="left">{{ row.0 }}</td><td>{{ row.1 }}</td></tr>
+            <tr><td align="left">{{ row.filename }}</td><td>{{ row.count }}</td></tr>
             {% endfor %}
         </table>
     </div>

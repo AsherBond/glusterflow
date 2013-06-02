@@ -2,9 +2,11 @@
 
 import sys
 import json
+from datetime import datetime
 import psycopg2
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
+from twisted.internet import error
 """GlusterFlow JSON Server
 
 Very simple JSON server, catching GlusterFlow JSON data
@@ -14,7 +16,7 @@ Very proof-of-concept / experimental :)
 """
 
 #  Set various constants
-gf_json_server_ver = '0.0.2'
+gf_json_server_ver = '0.0.3'
 db_host = '/tmp'  # '/tmp' instead of a hostname means "connect to localhost using unix domain sockets"
                   # Feel free to change this to a hostname if you need :)
 db_port = 5432
@@ -37,12 +39,71 @@ class MyUDPServerHandler(DatagramProtocol):
 
         try:
 
-            # Insert the JSON message contents into the database
+            # Insert the raw JSON message contents into the database
             cur = conn.cursor()
-            insert_string = 'INSERT into ui_flowdata(server, protocol, operation, filename, start_time) VALUES (%s, %s, %s, %s, %s)'
-            cur.execute(insert_string, (gl_data['server'], gl_data['gf_protocol'], gl_data['operation'], gl_data['file'], gl_data['start']))
-            conn.commit()
+            json_msg = 'INSERT into ui_flowdata_new(' \
+                       'server, protocol, operation, filename, start_time)' \
+                       ' VALUES (%s, %s, %s, %s, %s)'
 
+            if debug == 1:
+                print 'DEBUG: ' + repr(json_msg)
+
+            cur.execute(json_msg, (gl_data['server'], gl_data['gf_protocol'],
+                                   gl_data['operation'], gl_data['file'],
+                                   gl_data['start']))
+
+            # Create a timestamp with minute level accuracy
+            summary_time = datetime.now().replace(second=0, microsecond=0)
+
+            # Find out if a summary row with the "# of operations this
+            # minute" already exists for the current time period
+            sel_sum = 'SELECT count FROM ui_fop_summaries WHERE ' \
+                      'server = %s AND operation = %s AND summary_time = %s'
+            cur.execute(sel_sum, (gl_data['server'], gl_data['operation'],
+                                  summary_time))
+
+            # Create one if it doesn't exist, or update one if it does
+            if cur.rowcount == 0:
+                # It doesn't so create a new operation summary for the current
+                # time period
+                ins_sum = 'INSERT into ui_fop_summaries(' \
+                          'server, operation, summary_time, count)' \
+                          ' VALUES (%s, %s, %s, 1)'
+                cur.execute(ins_sum, (gl_data['server'], gl_data['operation'],
+                                      summary_time))
+            else:
+                # An operation summary already exists, so update it
+                upd_sum = 'UPDATE ui_fop_summaries SET count = count + 1 ' \
+                          'WHERE server = %s AND operation = %s ' \
+                          'AND summary_time = %s'
+                cur.execute(upd_sum, (gl_data['server'], gl_data['operation'],
+                                      summary_time))
+
+            # Find out if a summary row with the "# of operations on this file
+            # this minute" already exists for the current time period
+            sel_sum = 'SELECT count FROM ui_filename_summaries WHERE ' \
+                      'server = %s AND filename = %s AND summary_time = %s'
+            cur.execute(sel_sum, (gl_data['server'], gl_data['file'],
+                                  summary_time))
+
+            if cur.rowcount == 0:
+                # It doesn't so create a new operation summary for the current
+                # time period
+                ins_sum = 'INSERT into ui_filename_summaries(' \
+                          'server, filename, summary_time, count)' \
+                          ' VALUES (%s, %s, %s, 1)'
+                cur.execute(ins_sum, (gl_data['server'], gl_data['file'],
+                                      summary_time))
+            else:
+                # An operation summary already exists, so update it
+                upd_sum = 'UPDATE ui_filename_summaries SET count = count + 1 ' \
+                          'WHERE server = %s AND filename = %s ' \
+                          'AND summary_time = %s'
+                cur.execute(upd_sum, (gl_data['server'], gl_data['file'],
+                                      summary_time))
+
+            # If everything worked, commit the transaction
+            conn.commit()
         except psycopg2.DatabaseError, e:
 
             # Something went wrong with the insert
@@ -62,24 +123,24 @@ for param in sys.argv[1:]:
 
 # Construct the database connection string
 # (seems like an ugly approach, but it works)
-connection_string = ''
+conn_str = ''
 if db_host:
-    connection_string = '{0} host={1}'.format(connection_string, db_host)
+    conn_st = '{0} host={1}'.format(conn_str, db_host)
 if db_port:
-    connection_string = '{0} port={1}'.format(connection_string, db_port)
+    conn_str = '{0} port={1}'.format(conn_str, db_port)
 if db_name:
-    connection_string = '{0} dbname={1}'.format(connection_string, db_name)
+    conn_str = '{0} dbname={1}'.format(conn_str, db_name)
 if db_user:
-    connection_string = '{0} user={1}'.format(connection_string, db_user)
+    conn_str = '{0} user={1}'.format(conn_str, db_user)
 if db_passwd:
-    connection_string = '{0} password={1}'.format(connection_string, db_passwd)
-connection_string = connection_string.strip()
+    conn_str = '{0} password={1}'.format(conn_str, db_passwd)
+conn_str = conn_str.strip()
 if debug == 1:
-    print 'DEBUG: Database connection string: ', connection_string
+    print 'DEBUG: Database connection string:', conn_str
 
 # Connect to the database
 try:
-    conn = psycopg2.connect(connection_string)
+    conn = psycopg2.connect(conn_str)
 
 except psycopg2.OperationalError, e:
     # Database connection error.  Display the error and exit
