@@ -6,8 +6,9 @@ DEBUG=1
 function addVolume {
   VOLUME_FILE="$1"
   VOLUME_NAME="$2"
-  MATCH_TEXT="$3"
-  NEXT_VOL_TEXT="$4"
+  VOLUME_TYPE="$3"
+  MATCH_TEXT="$4"
+  NEXT_VOL_TEXT="$5"
 
   # Generate a new temporary file name
   TEMP_FILE=`mktemp --tmpdir nfstempXXXXXXXX`
@@ -34,7 +35,46 @@ function addVolume {
   # Overwrite the original volume file with the new one
   mv -f $TEMP_FILE $VOLUME_FILE
 
+  # Log the result
+  echo "RESULT = GlusterFlow client added to $VOLUME_TYPE volume" >> $LOG_FILE
+
   # Indicate everything went ok
+  return 0
+}
+
+# Function to determine the name of a volume
+function determineVolumeName {
+  VOLUME_FILE="$1"
+  VOLUME_TYPE="$2"
+
+  if [ "$VOLUME_TYPE" = "NATIVE-SERVER" ]; then
+    VOLUME_NAME=`egrep "^volume (.*)-posix" $VOLUME_FILE | cut -d ' ' -f 2 | cut -d '-' -f 1`
+  else
+    VOLUME_NAME=`egrep "^volume (.*)-client-0" $VOLUME_FILE | cut -d ' ' -f 2 | cut -d '-' -f 1`
+  fi
+
+  return 0
+}
+
+# Function to determine the type of a volume
+function determineVolumeType {
+  VOLUME_FILE="$1"
+
+  VOLUME_TYPE=UNKNOWN
+  if [ `expr match "$VOLUME_FILE" '.*nfs-server.vol$'` -ne 0 ]; then
+    # This is an NFS server volume file
+    VOLUME_TYPE=NFS-SERVER
+  elif [ `expr match "$VOLUME_FILE" '.*trusted-.*-fuse.vol$'` -ne 0 ]; then
+    # This is a trusted fuse client volume file
+    VOLUME_TYPE=TRUSTED-FUSE-CLIENT
+  elif [ `expr match "$VOLUME_FILE" '.*/.*-fuse.vol$'` -ne 0 ]; then
+    # This is a standard fuse client volume file
+    VOLUME_TYPE=FUSE-CLIENT
+  elif [ `expr match "$VOLUME_FILE" '.*/.*-glusterfs.vol$'` -ne 0 ]; then
+    # This is a standard native server volume file
+    VOLUME_TYPE=NATIVE-SERVER
+  fi
+
   return 0
 }
 
@@ -48,30 +88,13 @@ VOLUME_FILE=$1
 echo "New run: $DATE" >> $LOG_FILE
 echo "VOLUME_FILE = $VOLUME_FILE" >> $LOG_FILE
 
-# Determine which part of GlusterFS this volume
-# file is for (eg fuse client, nfs server, native server, etc)
-VOLUME_TYPE=UNKNOWN
-if [ `expr match "$VOLUME_FILE" '.*nfs-server.vol$'` -ne 0 ]; then
-  # This is an NFS server volume file
-  VOLUME_TYPE=NFS-SERVER
-elif [ `expr match "$VOLUME_FILE" '.*trusted-.*-fuse.vol$'` -ne 0 ]; then
-  # This is a trusted fuse client volume file
-  VOLUME_TYPE=TRUSTED-FUSE-CLIENT
-elif [ `expr match "$VOLUME_FILE" '.*/.*-fuse.vol$'` -ne 0 ]; then
-  # This is a standard fuse client volume file
-  VOLUME_TYPE=FUSE-CLIENT
-elif [ `expr match "$VOLUME_FILE" '.*/.*-glusterfs.vol$'` -ne 0 ]; then
-  # This is a standard native server volume file
-  VOLUME_TYPE=NATIVE-SERVER
-fi
+# Determine which part of GlusterFS this volume file
+# is for (eg fuse client, nfs server, native server, etc)
+determineVolumeType "$VOLUME_FILE"
 echo "VOLUME_TYPE = $VOLUME_TYPE" >> $LOG_FILE
 
 # Determine the volume name
-if [ "$VOLUME_TYPE" = "NATIVE-SERVER" ]; then
-  VOLUME_NAME=`egrep "^volume (.*)-posix" $VOLUME_FILE | cut -d ' ' -f 2 | cut -d '-' -f 1`
-else
-  VOLUME_NAME=`egrep "^volume (.*)-client-0" $VOLUME_FILE | cut -d ' ' -f 2 | cut -d '-' -f 1`
-fi
+determineVolumeName "$VOLUME_FILE" "$VOLUME_TYPE"
 echo "VOLUME_NAME = $VOLUME_NAME" >> $LOG_FILE
 
 # Process the volume file according to its type
@@ -79,37 +102,25 @@ case $VOLUME_TYPE in
   "NFS-SERVER")
     # We add our new volume between the default
     # "$VOLUME_NAME-write-behind" one and the "$VOLUME_NAME" one
-
-    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "volume $VOLUME_NAME" "write-behind"
-
-    # Log the result
-    if [ $? -eq 0 ]; then
-      echo "RESULT = GlusterFlow client added to NFS server volume" >> $LOG_FILE
-    else
-      echo "RESULT = ERROR adding GlusterFlow client to NFS server volume" >> $LOG_FILE
-    fi
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "$VOLUME_TYPE" "volume $VOLUME_NAME" "write-behind"
     ;;
 
   "TRUSTED-FUSE-CLIENT")
-    # To be done
+    # We add our new volume between the default
+    # "$VOLUME_NAME-md-cache" one and the "$VOLUME_NAME" one
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "$VOLUME_TYPE" "volume $VOLUME_NAME" "md-cache"
     ;;
 
   "FUSE-CLIENT")
-    # To be done
+    # We add our new volume between the default
+    # "$VOLUME_NAME-md-cache" one and the "$VOLUME_NAME" one
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "$VOLUME_TYPE" "volume $VOLUME_NAME" "md-cache"
     ;;
 
   "NATIVE-SERVER")
     # We add our new volume between the default
     # "$VOLUME_NAME-io-threads" one and the "$VOLUME_NAME-index" one
-
-    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "volume $VOLUME_NAME-index" "io-threads"
-
-    # Log the result
-    if [ $? -eq 0 ]; then
-      echo "RESULT = GlusterFlow client added to native server volume" >> $LOG_FILE
-    else
-      echo "RESULT = ERROR adding GlusterFlow client to native server volume" >> $LOG_FILE
-    fi
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "$VOLUME_TYPE" "volume $VOLUME_NAME-index" "io-threads"
     ;;
 
   *)
@@ -123,6 +134,6 @@ case $VOLUME_TYPE in
     ;;
 esac
 
-# Add a blank line between runs of this script
+# Add a blank line to the log file between runs of this script
 echo >> $LOG_FILE
 
