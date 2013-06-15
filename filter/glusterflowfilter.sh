@@ -3,6 +3,41 @@
 # Change this to 1 to log into /var/log/glusterfs/filter.log
 DEBUG=1
 
+function addVolume {
+  VOLUME_FILE="$1"
+  VOLUME_NAME="$2"
+  MATCH_TEXT="$3"
+  NEXT_VOL_TEXT="$4"
+
+  # Generate a new temporary file name
+  TEMP_FILE=`mktemp --tmpdir nfstempXXXXXXXX`
+
+  # Work out where to split the original file
+  TOTAL_LINES=`wc -l $VOLUME_FILE | cut -d ' ' -f 1`
+  SPLIT_LINE=`egrep -n "^\$MATCH_TEXT$" $VOLUME_FILE | cut -d ':' -f 1`
+  HEAD_LINES=`expr $SPLIT_LINE - 1`
+  TAIL_LINES=`expr $TOTAL_LINES - $SPLIT_LINE + 2`
+
+  # Create the initial part of the new volume file
+  head -n $HEAD_LINES $VOLUME_FILE > $TEMP_FILE
+
+  # Add our custom volume text
+  echo "volume ${VOLUME_NAME}-glusterflowclient" >> $TEMP_FILE
+  echo "    type features/glupy" >> $TEMP_FILE
+  echo "    option module-name glusterflowclient" >> $TEMP_FILE
+  echo "    subvolumes ${VOLUME_NAME}-${NEXT_VOL_TEXT}" >> $TEMP_FILE
+  echo "end-volume" >> $TEMP_FILE
+
+  # Add the ending part of the volume file
+  tail -n $TAIL_LINES $VOLUME_FILE | sed "s/$NEXT_VOL_TEXT/glusterflowclient/" >> $TEMP_FILE
+
+  # Overwrite the original volume file with the new one
+  mv -f $TEMP_FILE $VOLUME_FILE
+
+  # Indicate everything went ok
+  return 0
+}
+
 # Retrieve info used in this script
 DATE=`date`
 VOLUME_FILE=$1
@@ -14,7 +49,7 @@ echo "New run: $DATE" >> $LOG_FILE
 echo "VOLUME_FILE = $VOLUME_FILE" >> $LOG_FILE
 
 # Determine which part of GlusterFS this volume
-# file is for (eg client, nfs server, native server)
+# file is for (eg fuse client, nfs server, native server, etc)
 VOLUME_TYPE=UNKNOWN
 if [ `expr match "$VOLUME_FILE" '.*nfs-server.vol$'` -ne 0 ]; then
   # This is an NFS server volume file
@@ -45,33 +80,14 @@ case $VOLUME_TYPE in
     # We add our new volume between the default
     # "$VOLUME_NAME-write-behind" one and the "$VOLUME_NAME" one
 
-    # Generate a new temporary file name
-    TEMP_FILE=`mktemp --tmpdir nfstempXXXXXXXX`
-
-    # Work out where to split the original file
-    TOTAL_LINES=`wc -l $VOLUME_FILE | cut -d ' ' -f 1`
-    SPLIT_LINE=`egrep -n "^volume \$VOLUME_NAME$" $VOLUME_FILE | cut -d ':' -f 1`
-    HEAD_LINES=`expr $SPLIT_LINE - 1`
-    TAIL_LINES=`expr $TOTAL_LINES - $SPLIT_LINE + 2`
-
-    # Create the initial part of the new volume file
-    head -n $HEAD_LINES $VOLUME_FILE > $TEMP_FILE
-
-    # Add our custom volume text
-    echo "volume ${VOLUME_NAME}-glusterflowclient" >> $TEMP_FILE
-    echo "    type features/glupy" >> $TEMP_FILE
-    echo "    option module-name glusterflowclient" >> $TEMP_FILE
-    echo "    subvolumes ${VOLUME_NAME}-write-behind" >> $TEMP_FILE
-    echo "end-volume" >> $TEMP_FILE
-
-    # Add the ending part of the volume file
-    tail -n $TAIL_LINES $VOLUME_FILE | sed 's/write-behind/glusterflowclient/' >> $TEMP_FILE
-
-    # Overwrite the original volume file with the new one
-    mv -f $TEMP_FILE $VOLUME_FILE
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "volume $VOLUME_NAME" "write-behind"
 
     # Log the result
-    echo "RESULT = GlusterFlow client added to NFS server volume" >> $LOG_FILE
+    if [ $? -eq 0 ]; then
+      echo "RESULT = GlusterFlow client added to NFS server volume" >> $LOG_FILE
+    else
+      echo "RESULT = ERROR adding GlusterFlow client to NFS server volume" >> $LOG_FILE
+    fi
     ;;
 
   "TRUSTED-FUSE-CLIENT")
@@ -83,7 +99,17 @@ case $VOLUME_TYPE in
     ;;
 
   "NATIVE-SERVER")
-    # To be done
+    # We add our new volume between the default
+    # "$VOLUME_NAME-io-threads" one and the "$VOLUME_NAME-index" one
+
+    addVolume "$VOLUME_FILE" "$VOLUME_NAME" "volume $VOLUME_NAME-index" "io-threads"
+
+    # Log the result
+    if [ $? -eq 0 ]; then
+      echo "RESULT = GlusterFlow client added to native server volume" >> $LOG_FILE
+    else
+      echo "RESULT = ERROR adding GlusterFlow client to native server volume" >> $LOG_FILE
+    fi
     ;;
 
   *)
