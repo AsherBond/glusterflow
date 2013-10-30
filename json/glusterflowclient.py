@@ -1,67 +1,59 @@
 import sys
 import socket
-import json
 import time
 from datetime import datetime
-from gluster import *
-"""Send metrics of every request to a central collector server
+
+# For LogStash
+import logging
+import logstash_formatter
+
+# Import Glupy
+from gluster_glupy import *
+
+'''Send metrics of every request to a central analytics server
 
 This is to enable intelligent diagnostics and reporting cluster wide.
-"""
+'''
 
-# GlusterFlow Server
-# This needs to be changed into a .vol file option
-glusterflow_json_server = ('192.168.1.68', 13373)
-
-# Protocol *string* to send
-# This also needs to be changed into a .vol file option
-# 0 = native
-# 1 = NFS
-gf_protocol = '0'
+# TODO: This should be changed into a .vol file option, or autoconfigure
+# native_server = Gluster native server
+# fuse_client = Gluster native client
+# nfs_server = Gluster NFS server
+# libgfapi = Libgfapi client
+event_source = 'nfs_server'
 
 # Debug on or off
-debug = 0
+debug = 1
 
-# Work out the hostname
-this_host = str(socket.getfqdn())
+# Determine the local hostname
+this_host = str(socket.gethostname())
 
-# Define file operation enums
-def enum(**enums):
-    return type('Enum', (), enums)
-Fop = enum(LOOKUP=0, CREATE=2, OPEN=4, READV=6, WRITEV=8, OPENDIR=10,
-           READDIR=12, READDIRP=14, STAT=16, FSTAT=18, STATFS=20, SETXATTR=22,
-           GETXATTR=24, FSETXATTR=26, FGETXATTR=28, REMOVEXATTR=30,
-           FREMOVEXATTR=32, LINK=34, SYMLINK=36, UNLINK=38, READLINK=40,
-           MKDIR=42, RMDIR=44)
+# Set up logging to go via LogStash
+logger = logging.getLogger()
+handler = logging.FileHandler('/var/log/glusterflow.log')
+formatter = logstash_formatter.LogstashFormatter()
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 
 def send_message(operation, file_name):
 
     # Get timestamp
     start_time = datetime.now()
 
-    # Create connection to GlusterFlow server
-    global msg
-    try:
-        msg = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        msg.connect(glusterflow_json_server)
+    # Create GlusterFlow event message
+    # TODO: If possible, it would be good to also include the hostname of the
+    # client
+    gf_message = {'server': this_host, 'source': event_source,
+                  'operation': operation, 'file': file_name,
+                  'start':str(start_time)}
 
-    except socket.error, e:
-        # Something went wrong when creating the connection
-        print 'ERROR: socket error occurred: ', e
+    # If debugging, throw the message to the console
+    if debug:
+        print(gf_message)
 
-    else:
-        # Create GlusterFlow message to send
-        # It would be good to also include the hostname of the client too later on (if possible)
-        gf_message = {'server': this_host, 'gf_protocol': gf_protocol, 'operation': operation, 'file': file_name, 'start':str(start_time)}
-
-        # Send message to GlusterFlow server
-        json_message = json.dumps(gf_message)
-        try:
-            msg.sendall(json_message)
-        except socket.error, e:
-            print 'ERROR: Error received at msg.sendall() time: ', e
-        else:
-            msg.close()
+    # Send message to ElasticSearch via LogStash
+    logging.warning(gf_message)
 
 
 class xlator (Translator):
@@ -74,15 +66,9 @@ class xlator (Translator):
 
 
     def lookup_fop (self, frame, this, loc, xdata):
-#        print "loc->path : ", repr(loc.contents.path)
-#        print "loc->name : ", repr(loc.contents.name)
-#        print "loc->inode : ", repr(loc.contents.inode)
-#        print "loc->parent : ", repr(loc.contents.parent)
-#        print "loc->gfid : ", repr(loc.contents.gfid)
-#        print "loc->pargfid : ", repr(loc.contents.pargfid)
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.LOOKUP, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('lookup', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_lookup(frame,POINTER(xlator_t)(), loc, xdata)
@@ -91,8 +77,8 @@ class xlator (Translator):
 
     def create_fop (self, frame, this, loc, flags, mode, umask, fd, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.CREATE, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('create', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_create(frame, POINTER(xlator_t)(), loc, flags, mode, umask, fd,
@@ -102,96 +88,38 @@ class xlator (Translator):
 
     def open_fop (self, frame, this, loc, flags, fd, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.OPEN, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('open', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_open(frame, POINTER(xlator_t)(), loc, flags, fd, xdata)
         return 0
 
 
-# Commented out until I understand how to turn this into a filename
-#    def readv_fop (self, frame, this, fd, size, offset, flags, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.READV, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_readv(frame, POINTER(xlator_t)(), fd, size, offset, flags,
-#                      xdata)
-#        return 0
-
-
-# Commented out until I understand how to turn this into a filename
-#    def writev_fop (self, frame, this, fd, vector, count, offset, flags,
-#                    iobref, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.WRITEV, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_writev(frame, POINTER(xlator_t)(), fd, vector, count, offset,
-#                       flags, iobref, xdata)
-#        return 0
-
-
     def opendir_fop (self, frame, this, loc, fd, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.OPENDIR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('opendir', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_opendir(frame, POINTER(xlator_t)(), loc, fd, xdata)
         return 0
 
 
-# Commented out until I understand how to turn this into a filename
-#    def readdir_fop (self, frame, this, fd, size, offset, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.READDIR, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_readdir(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
-#        return 0
-
-
-# Commented out until I understand how to turn this into a filename
-#    def readdirp_fop (self, frame, this, fd, size, offset, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.READDIRP, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_readdirp(frame, POINTER(xlator_t)(), fd, size, offset, xdata)
-#        return 0
-
-
     def stat_fop (self, frame, this, loc, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.STAT, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('stat', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_stat(frame, POINTER(xlator_t)(), loc, xdata)
         return 0
 
 
-# Commented out until I understand how to turn this into a filename
-#    def fstat_fop (self, frame, this, fd, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.FSTAT, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_fstat(frame, POINTER(xlator_t)(), fd, xdata)
-#        return 0
-
-
     def statfs_fop (self, frame, this, loc, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.STATFS, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('statfs', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_statfs(frame, POINTER(xlator_t)(), loc, xdata)
@@ -200,8 +128,8 @@ class xlator (Translator):
 
     def setxattr_fop (self, frame, this, loc, dictionary, flags, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.SETXATTR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('setxattr', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_setxattr(frame, POINTER(xlator_t)(), loc, dictionary, flags,
@@ -211,63 +139,29 @@ class xlator (Translator):
 
     def getxattr_fop (self, frame, this, loc, name, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.GETXATTR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('getxattr', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_getxattr(frame, POINTER(xlator_t)(), loc, name, xdata)
         return 0
 
 
-# Commented out until I understand how to turn this into a filename
-#    def fsetxattr_fop (self, frame, this, fd, dictionary, flags, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.FSETXATTR, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_fsetxattr(frame, POINTER(xlator_t)(), fd, dictionary, flags,
-#                          xdata)
-#        return 0
-
-
-# Commented out until I understand how to turn this into a filename
-#    def fgetxattr_fop (self, frame, this, fd, name, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.FGETXATTR, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_fgetxattr(frame, POINTER(xlator_t)(), fd, name, xdata)
-#        return 0
-
-
     def removexattr_fop (self, frame, this, loc, name, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.REMOVEXATTR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('removexattr', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_removexattr(frame, POINTER(xlator_t)(), loc, name, xdata)
         return 0
 
 
-# Commented out until I understand how to turn this into a filename
-#    def fremovexattr_fop (self, frame, this, fd, name, xdata):
-#
-#        # Send GlusterFlow JSON message to collector
-#        send_message(Fop.FREMOVEXATTR, 'fd')
-#
-#        # Continue on to the next translator
-#        dl.wind_fremovexattr(frame, POINTER(xlator_t)(), fd, name, xdata)
-#        return 0
-
-
     def link_fop (self, frame, this, oldloc, newloc, xdata):
-# Probably need new fields in the database for this function
+# TODO: Probably need new fields in the database for this function
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.LINK, oldloc.contents.path)
+        # Send GlusterFlow message
+        send_message('link', oldloc.contents.path)
 
         # Continue on to the next translator
         dl.wind_link(frame, POINTER(xlator_t)(), oldloc, newloc, xdata)
@@ -276,8 +170,8 @@ class xlator (Translator):
 
     def symlink_fop (self, frame, this, linkname, loc, umask, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.SYMLINK, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('symlink', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_symlink(frame, POINTER(xlator_t)(), linkname, loc, umask,
@@ -287,8 +181,8 @@ class xlator (Translator):
 
     def unlink_fop (self, frame, this, loc, xflags, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.UNLINK, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('unlink', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_unlink(frame, POINTER(xlator_t)(), loc, xflags, xdata)
@@ -297,8 +191,8 @@ class xlator (Translator):
 
     def readlink_fop (self, frame, this, loc, size, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.READLINK, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('readlink', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_readlink(frame, POINTER(xlator_t)(), loc, size, xdata)
@@ -307,8 +201,8 @@ class xlator (Translator):
 
     def mkdir_fop (self, frame, this, loc, mode, umask, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.MKDIR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('mkdir', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_mkdir(frame, POINTER(xlator_t)(), loc, mode, umask, xdata)
@@ -317,8 +211,8 @@ class xlator (Translator):
 
     def rmdir_fop (self, frame, this, loc, xflags, xdata):
 
-        # Send GlusterFlow JSON message to collector
-        send_message(Fop.RMDIR, loc.contents.path)
+        # Send GlusterFlow message
+        send_message('rmdir', loc.contents.path)
 
         # Continue on to the next translator
         dl.wind_rmdir(frame, POINTER(xlator_t)(), loc, xflags, xdata)
