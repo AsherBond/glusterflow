@@ -23,14 +23,14 @@ function addVolume {
   head -n $HEAD_LINES $VOLUME_FILE > $TEMP_FILE
 
   # Add our custom volume text
-  echo "volume ${VOLUME_NAME}-glusterflowclient" >> $TEMP_FILE
+  echo "volume ${VOLUME_NAME}-glusterflow" >> $TEMP_FILE
   echo "    type features/glupy" >> $TEMP_FILE
-  echo "    option module-name glusterflowclient" >> $TEMP_FILE
+  echo "    option module-name glusterflow" >> $TEMP_FILE
   echo "    subvolumes ${VOLUME_NAME}-${NEXT_VOL_TEXT}" >> $TEMP_FILE
   echo "end-volume" >> $TEMP_FILE
 
   # Add the ending part of the volume file
-  tail -n $TAIL_LINES $VOLUME_FILE | sed "s/$NEXT_VOL_TEXT/glusterflowclient/" >> $TEMP_FILE
+  tail -n $TAIL_LINES $VOLUME_FILE | sed "s/$NEXT_VOL_TEXT/glusterflow/" >> $TEMP_FILE
 
   # Overwrite the original volume file with the new one
   mv -f $TEMP_FILE $VOLUME_FILE
