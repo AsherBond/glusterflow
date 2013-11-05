@@ -42,11 +42,10 @@ def send_message(operation, file_name):
     start_time = datetime.now()
 
     # Create GlusterFlow event message
-    # TODO: If possible, it would be good to also include the hostname of the
-    # client
+    # TODO: It would be good to also include the hostname of the client
     gf_message = {'server': this_host, 'source': event_source,
                   'operation': operation, 'file': file_name,
-                  'start':str(start_time)}
+                  'start': str(start_time)}
 
     # If debugging, throw the message to the console
     if debug:
@@ -59,10 +58,9 @@ def send_message(operation, file_name):
 class xlator (Translator):
 
     def __init__ (self, c_this):
-        self.hostname = socket.getfqdn()
 
         # Run normal translator init
-        Translator.__init__(self,c_this)
+        Translator.__init__(self, c_this)
 
 
     def lookup_fop (self, frame, this, loc, xdata):
@@ -71,7 +69,7 @@ class xlator (Translator):
         send_message('lookup', loc.contents.path)
 
         # Continue on to the next translator
-        dl.wind_lookup(frame,POINTER(xlator_t)(), loc, xdata)
+        dl.wind_lookup(frame, POINTER(xlator_t)(), loc, xdata)
         return 0
 
 
@@ -158,7 +156,7 @@ class xlator (Translator):
 
 
     def link_fop (self, frame, this, oldloc, newloc, xdata):
-# TODO: Probably need new fields in the database for this function
+        # TODO: Probably need new fields in the database for this function
 
         # Send GlusterFlow message
         send_message('link', oldloc.contents.path)
