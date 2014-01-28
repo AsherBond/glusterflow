@@ -3,11 +3,6 @@ GlusterFlow
 
 A cluster wide profiling and analysis web app for GlusterFS
 
-Screenshot
-----------
-
-![GlusterFlow Screenshot](https://github.com/justinclift/glusterflow/raw/master/ui/static/ui/screenshots/glusterflow_screenshot_0.0.1.png "GlusterFlow Screenshot")
-
 Status
 ------
 
