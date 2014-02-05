@@ -72,4 +72,6 @@ To Do
 * Update for multi-node operation (hopefully not hard)
 * Ensure the "Most Used Files" panel only shows files (not dir names)
 * Add a "Most Used Directories" panel
-* Add authentication.
+* Add authentication
+* Consider adding thresholds and alerting
+
