@@ -15,7 +15,7 @@ Requirements
 * Python 2.7.x
 * ElasticSearch 0.90.x
 * Kibana 3
-* LogStash 1.2.x
+* LogStash 1.3.3 or above
 
 Supported Platforms
 -------------------
