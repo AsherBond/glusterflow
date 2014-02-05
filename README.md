@@ -18,7 +18,7 @@ This is in very early stages of development, but making good progress already
 Requirements
 ------------
 
-* Glupy (part of Gluster 3.5 and above)
+* Glupy (part of Gluster 3.5 and above, but can be installed manually on Gluster 3.4)
 * Python 2.7.x
 * ElasticSearch 0.90.x
 * Kibana 3
@@ -40,7 +40,7 @@ Installation
 
 __1. Ensure you have a working LogStash, ElasticSearch, Kibana 3 cluster__
 
-The instructions on the LogStash website should get you started.
+The instructions on the [LogStash](http://logstash.net) website should get you started.
 
 __2. Install Glupy on your GlusterFS nodes__
 
