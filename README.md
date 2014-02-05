@@ -61,6 +61,7 @@ be sent to ElasticSearch on the local host, for viewing in Kibana.
 To Do
 -----
 
-* Find out how to use "terms facets" to return facet counts, to establish the
-  busiest files for each time period.
+* Update for multi-node operation (hopefully not hard)
+* Ensure the "Most Used Files" panel only shows files (not dir names)
+* Add a "Most Used Directories" panel
 * Add authentication.
