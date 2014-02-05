@@ -3,6 +3,13 @@ GlusterFlow
 
 A cluster wide profiling and analysis web app for GlusterFS
 
+Screenshots
+-----------
+
+![Usage Graph](https://github.com/justinclift/glusterflow/raw/master/screenshots/glusterflow_usage_graph.png "Usage Graph")
+![Most Used Files](https://github.com/justinclift/glusterflow/raw/master/screenshots/glusterflow_most_used_files.png "Most Used Files")
+![Most Common Operations](https://github.com/justinclift/glusterflow/raw/master/screenshots/glusterflow_common_operations.png "Most Common Operations")
+
 Status
 ------
 
