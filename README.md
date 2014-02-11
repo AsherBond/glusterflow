@@ -74,4 +74,5 @@ To Do
 * Add a "Most Used Directories" panel
 * Add authentication
 * Consider adding thresholds and alerting
+* Investigate replacing the filter script with the Python code jdarcy mentioned
 
