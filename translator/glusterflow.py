@@ -8,7 +8,7 @@ import logging
 import logstash_formatter
 
 # Import Glupy
-from gluster_glupy import *
+from glupy import *
 
 '''Send metrics of every request to a central analytics server
 
