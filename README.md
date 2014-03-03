@@ -43,7 +43,11 @@ __1. Ensure you have a working LogStash, ElasticSearch, & Kibana 3 cluster__
 
 The instructions on the [LogStash](http://logstash.net) website should get you started.
 
-__2. Ensure you have Glupy on your GlusterFS nodes__
+__2. Install the Logstash Formatter for Python__
+
+    $ sudo pip install logstash_formatter
+
+__3. Ensure you have Glupy on your GlusterFS nodes__
 
 GlusterFlow depends on Glupy being installed on your GlusterFS nodes first:
 
@@ -54,10 +58,14 @@ the external project repository:
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; https://github.com/justinclift/glupy
 
-__3. Install the GlusterFlow filter__
+__4. Install the GlusterFlow filter__
 
 Follow the README instructions in the filter/ directory
 
+__5. Install the GlusterFlow Translator__
+
+Instructions still To Be Written.
+    
 
 Running it
 ----------
