@@ -45,6 +45,18 @@ The instructions on the [LogStash](http://logstash.net) website should get you s
 
 __2. Install the Logstash Formatter for Python__
 
+At present, we pass information to LogStash using a file based approach, so
+need to install the "logstash_formatter" Python module.
+
+On a new minimal install of CentOS 6.5, the normal pip installation command
+doesn't work out of the box so you'll need to run this first:
+
+    $ sudo yum install python-pip
+    $ sudo pip install --upgrade pip setuptools
+    $ sudo pip install Distribute
+
+After that, the normal pip installation commands should work:
+
     $ sudo pip install logstash_formatter
 
 __3. Ensure you have Glupy on your GlusterFS nodes__
